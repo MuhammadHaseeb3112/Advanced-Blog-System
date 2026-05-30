@@ -18,7 +18,7 @@ import blog.routing
 
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE",
-    "core.settings.development"
+    "core.settings.production"
 )
 
 django_asgi_app = (

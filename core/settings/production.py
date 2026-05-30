@@ -1,24 +1,48 @@
 from .base import *
+import os
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['yourdomain.com']
-
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "*"
+).split(",")
 
 SECURE_SSL_REDIRECT = True
+
 SESSION_COOKIE_SECURE = True
+
 CSRF_COOKIE_SECURE = True
 
+# =====================================
+# CSRF TRUSTED ORIGINS
+# =====================================
 
-# For production
+CSRF_TRUSTED_ORIGINS = []
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:3000",
-#     "http://localhost:3000",
-# ]
+render_url = os.getenv(
+    "RENDER_EXTERNAL_URL"
+)
 
+if render_url:
 
-# For production
+    if not render_url.startswith(
+        "http"
+    ):
+        render_url = (
+            f"https://{render_url}"
+        )
 
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+    CSRF_TRUSTED_ORIGINS.append(
+        render_url
+    )
+
+# =====================================
+# SECURITY HEADERS
+# =====================================
+
+SECURE_HSTS_SECONDS = 31536000
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+SECURE_HSTS_PRELOAD = True
