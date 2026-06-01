@@ -6,9 +6,11 @@ Automat==25.4.16
 billiard==4.2.4
 cbor2==6.1.1
 celery==5.6.3
+certifi==2026.5.20
 cffi==2.0.0
 channels==4.3.2
 channels_redis==4.3.0
+charset-normalizer==3.4.7
 click==8.4.0
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
@@ -18,6 +20,7 @@ constantly==23.10.4
 cron-descriptor==1.4.5
 cryptography==48.0.0
 daphne==4.2.1
+dj-rest-auth==7.2.0
 Django==6.0.5
 django-allauth==65.16.1
 django-celery-beat==2.9.0
@@ -62,6 +65,7 @@ pytz==2026.2
 PyYAML==6.0.3
 redis==7.4.0
 referencing==0.37.0
+requests==2.34.2
 rpds-py==0.30.0
 service-identity==24.2.0
 setuptools==82.0.1
@@ -75,6 +79,7 @@ tzdata==2026.2
 tzlocal==5.3.1
 ujson==5.12.1
 uritemplate==4.2.0
+urllib3==2.7.0
 vine==5.1.0
 wcwidth==0.7.0
 whitenoise==6.12.0

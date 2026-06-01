@@ -54,6 +54,31 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
+from rest_framework import permissions
+
+from drf_yasg.views import get_schema_view
+
+from drf_yasg import openapi
+
+
+schema_view = get_schema_view(
+
+    openapi.Info(
+
+        title="Django Blog API",
+
+        default_version='v1',
+
+        description="Advanced Django Blog API",
+
+    ),
+
+    public=True,
+
+    permission_classes=[permissions.AllowAny],
+
+)
+
 
 # =========================================
 # ROUTER
@@ -219,6 +244,46 @@ urlpatterns = [
     AuthorProfileAPIView.as_view(),
     name='author_profile_api'
 ),
+
+ path(
+
+        'swagger/',
+
+        schema_view.with_ui(
+            'swagger',
+            cache_timeout=0
+        ),
+
+        name='schema-swagger-ui'
+
+    ),
+
+
+      # ==========================
+    # API DOCUMENTATION
+    # ==========================
+
+    path(
+        'api/schema/',
+        SpectacularAPIView.as_view(),
+        name='schema'
+    ),
+
+    path(
+        'api/schema/swagger-ui/',
+        SpectacularSwaggerView.as_view(
+            url_name='schema'
+        ),
+        name='swagger-ui'
+    ),
+
+    path(
+        'api/schema/redoc/',
+        SpectacularRedocView.as_view(
+            url_name='schema'
+        ),
+        name='redoc'
+    ),
 
 path(
     "schema/",

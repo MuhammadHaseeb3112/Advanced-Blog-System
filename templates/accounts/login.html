@@ -1,23 +1,412 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
 
 {% block content %}
 
-<h2>Login</h2>
+<div class="auth-wrapper">
 
-<form method="POST">
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="bg-circle circle-3"></div>
 
-    {% csrf_token %}
+    <div class="auth-card">
 
-    {{ form.as_p }}
+        <div class="logo-area">
 
-    <button type="submit">Login</button>
+            <div class="logo-icon">
+                🚀
+            </div>
 
-</form>
+            <h1>DjangoBlog</h1>
 
-<p>
-    <a href="{% url 'password_reset' %}">
-        Forgot Password?
-    </a>
-</p>
+            <p>
+                Welcome back! Sign in to access your dashboard.
+            </p>
+
+        </div>
+
+        <form method="POST" class="auth-form">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="login-btn">
+                Sign In
+            </button>
+
+        </form>
+
+        <div class="forgot-link">
+
+            <a href="{% url 'password_reset' %}">
+                Forgot Password?
+            </a>
+
+        </div>
+
+        <div class="divider">
+            <span>OR CONTINUE WITH</span>
+        </div>
+
+        <div class="social-grid">
+
+            <a href="{% provider_login_url 'google' %}" class="social-btn google">
+
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="22">
+
+                <span>Continue with Google</span>
+
+            </a>
+
+            <a href="{% provider_login_url 'github' %}" class="social-btn github">
+
+                <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                    0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                    -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+                    .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                    -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+                    .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+                    .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+                    0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8
+                    c0-4.42-3.58-8-8-8z" />
+                </svg>
+
+                <span>Continue with GitHub</span>
+
+            </a>
+
+        </div>
+
+        <div class="bottom-text">
+
+            Don't have an account?
+
+            <a href="{% url 'signup' %}">
+                Create Account
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .auth-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 40px 20px;
+
+        background:
+            radial-gradient(circle at top left, #2563eb55, transparent 30%),
+            radial-gradient(circle at bottom right, #7c3aed55, transparent 35%),
+            linear-gradient(135deg,
+                #020617,
+                #0f172a,
+                #111827);
+    }
+
+    .bg-circle {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        animation: float 10s infinite ease-in-out;
+    }
+
+    .circle-1 {
+        width: 400px;
+        height: 400px;
+        background: #2563eb;
+        top: -150px;
+        left: -100px;
+    }
+
+    .circle-2 {
+        width: 350px;
+        height: 350px;
+        background: #7c3aed;
+        bottom: -120px;
+        right: -120px;
+    }
+
+    .circle-3 {
+        width: 250px;
+        height: 250px;
+        background: #06b6d4;
+        top: 40%;
+        left: 60%;
+    }
+
+    .auth-card {
+
+        width: 100%;
+        max-width: 550px;
+
+        padding: 50px;
+
+        border-radius: 30px;
+
+        backdrop-filter: blur(25px);
+
+        background:
+            rgba(255, 255, 255, .08);
+
+        border:
+            1px solid rgba(255, 255, 255, .12);
+
+        box-shadow:
+            0 25px 60px rgba(0, 0, 0, .45);
+
+        color: white;
+
+        position: relative;
+        z-index: 2;
+
+        animation: slideUp .8s ease;
+    }
+
+    .logo-area {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .logo-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+
+    .logo-area h1 {
+
+        font-size: 2.8rem;
+        font-weight: 800;
+
+        background:
+            linear-gradient(135deg,
+                #60a5fa,
+                #c084fc);
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 10px;
+    }
+
+    .logo-area p {
+        color: #cbd5e1;
+    }
+
+    .auth-form p {
+        margin-bottom: 18px;
+    }
+
+    .auth-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .auth-form input {
+
+        width: 100%;
+
+        padding: 15px;
+
+        border-radius: 15px;
+
+        border:
+            1px solid rgba(255, 255, 255, .15);
+
+        background:
+            rgba(255, 255, 255, .08);
+
+        color: white;
+
+        font-size: 15px;
+    }
+
+    .auth-form input:focus {
+
+        outline: none;
+
+        border-color: #60a5fa;
+
+        box-shadow:
+            0 0 0 4px rgba(96, 165, 250, .2);
+    }
+
+    .login-btn {
+
+        width: 100%;
+
+        padding: 16px;
+
+        margin-top: 15px;
+
+        border: none;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(135deg,
+                #2563eb,
+                #7c3aed);
+
+        color: white;
+
+        font-size: 16px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: .35s;
+    }
+
+    .login-btn:hover {
+
+        transform:
+            translateY(-4px);
+
+        box-shadow:
+            0 15px 30px rgba(37, 99, 235, .35);
+    }
+
+    .forgot-link {
+        text-align: right;
+        margin-top: 15px;
+    }
+
+    .forgot-link a {
+        color: #93c5fd;
+        text-decoration: none;
+    }
+
+    .divider {
+
+        text-align: center;
+
+        margin: 30px 0;
+
+        color: #94a3b8;
+
+        font-size: 13px;
+
+        letter-spacing: 1px;
+    }
+
+    .social-grid {
+        display: grid;
+        gap: 15px;
+    }
+
+    .social-btn {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 12px;
+
+        padding: 15px;
+
+        border-radius: 15px;
+
+        text-decoration: none;
+
+        font-weight: 600;
+
+        transition: .3s;
+    }
+
+    .google {
+
+        background: white;
+
+        color: #111827;
+    }
+
+    .github {
+
+        background:
+            linear-gradient(135deg,
+                #111827,
+                #1f2937);
+
+        color: white;
+    }
+
+    .social-btn:hover {
+
+        transform:
+            translateY(-4px);
+
+        box-shadow:
+            0 12px 25px rgba(0, 0, 0, .25);
+    }
+
+    .bottom-text {
+
+        text-align: center;
+
+        margin-top: 30px;
+
+        color: #cbd5e1;
+    }
+
+    .bottom-text a {
+
+        color: #60a5fa;
+
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform:
+                translateY(0);
+        }
+
+        50% {
+            transform:
+                translateY(-40px);
+        }
+    }
+
+    @keyframes slideUp {
+
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media(max-width:600px) {
+
+        .auth-card {
+            padding: 30px;
+        }
+
+        .logo-area h1 {
+            font-size: 2.2rem;
+        }
+    }
+</style>
 
 {% endblock %}

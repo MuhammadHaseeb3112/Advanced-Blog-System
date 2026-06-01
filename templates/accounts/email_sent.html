@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="email-sent-wrapper">
+
+    ```
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+
+    <div class="email-card">
+
+        <div class="email-icon">
+            📧
+        </div>
+
+        <h1>Check Your Email</h1>
+
+        <p class="subtitle">
+            We've sent an account activation link to your email address.
+        </p>
+
+        <div class="info-box">
+
+            <p>
+                Please open your inbox and click the verification link to activate your account.
+            </p>
+
+            <p>
+                If you don't see the email, check your Spam or Junk folder.
+            </p>
+
+        </div>
+
+        <a href="{% url 'login' %}" class="login-btn">
+            Back to Login
+        </a>
+
+    </div>
+    ```
+
+</div>
+
+<style>
+    .email-sent-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 40px 20px;
+        background:
+            radial-gradient(circle at top left, #2563eb 0%, transparent 35%),
+            radial-gradient(circle at bottom right, #7c3aed 0%, transparent 35%),
+            linear-gradient(135deg, #0f172a, #111827, #0f172a);
+    }
+
+    .bg-circle {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+    }
+
+    .circle-1 {
+        width: 350px;
+        height: 350px;
+        background: #2563eb;
+        top: -120px;
+        left: -120px;
+    }
+
+    .circle-2 {
+        width: 350px;
+        height: 350px;
+        background: #7c3aed;
+        bottom: -120px;
+        right: -120px;
+    }
+
+    .email-card {
+        width: 100%;
+        max-width: 650px;
+        background: rgba(255, 255, 255, .08);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, .15);
+        border-radius: 30px;
+        padding: 50px;
+        text-align: center;
+        color: white;
+        z-index: 10;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, .35);
+        animation: fadeUp .8s ease;
+    }
+
+    .email-icon {
+        font-size: 70px;
+        margin-bottom: 20px;
+    }
+
+    .email-card h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .subtitle {
+        color: #cbd5e1;
+        margin-bottom: 25px;
+        font-size: 17px;
+    }
+
+    .info-box {
+        background: rgba(255, 255, 255, .08);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+
+    .info-box p {
+        color: #e2e8f0;
+        margin-bottom: 10px;
+    }
+
+    .login-btn {
+        display: inline-block;
+        padding: 15px 35px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg,
+                #2563eb,
+                #7c3aed);
+        transition: .3s;
+    }
+
+    .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(37, 99, 235, .35);
+    }
+
+    @keyframes fadeUp {
+
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    }
+</style>
+
+{% endblock %}

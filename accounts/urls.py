@@ -8,7 +8,6 @@ from django.contrib.auth.views import (
 
 from .views import (
     signup_view,
-    home,
     dashboard,
     profile_view,
     activate
@@ -19,11 +18,6 @@ from .forms import CustomAuthenticationForm
 
 urlpatterns = [
 
-    path(
-        '',
-        home,
-        name='home'
-    ),
 
     path(
         'signup/',

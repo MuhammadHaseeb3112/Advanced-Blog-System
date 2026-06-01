@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 
 from django.contrib.sites.shortcuts import get_current_site
 from blog.tasks import send_welcome_email
+from django.conf import settings
 
 from django.utils.http import (
     urlsafe_base64_encode,
@@ -29,9 +30,6 @@ from .models import CustomUser
 from .tokens import account_activation_token
 
 
-def home(request):
-
-    return HttpResponse("Home Page Working 🚀")
 
 # =========================================
 # SIGNUP VIEW
@@ -63,9 +61,10 @@ def signup_view(request):
             # CURRENT DOMAIN
             # =================================
 
-            current_site = get_current_site(
-                request
-            )
+            current_site = get_current_site(request)
+
+
+            domain = current_site.domain
 
             # =================================
             # EMAIL SUBJECT
@@ -81,27 +80,27 @@ def signup_view(request):
 
             message = render_to_string(
 
-                'accounts/verify_email.html',
+    'accounts/verify_email.html',
 
-                {
+    {
 
-                    'user': user,
+        'user': user,
 
-                    'domain': current_site.domain,
+        'domain': domain,
 
-                    'uid': urlsafe_base64_encode(
+        'uid': urlsafe_base64_encode(
 
-                        force_bytes(user.pk)
+            force_bytes(user.pk)
 
-                    ),
+        ),
 
-                    'token': account_activation_token.make_token(
-                        user
-                    ),
+        'token': account_activation_token.make_token(
+            user
+        ),
 
-                }
+    }
 
-            )
+)
 
             # =================================
             # SEND ACTIVATION EMAIL
@@ -121,12 +120,12 @@ def signup_view(request):
 
             email.send()
 
-            return HttpResponse(
+            print("DOMAIN =", domain)
 
-                'Please confirm your email address to complete registration.'
-
-            )
-
+            return render(
+    request,
+    'accounts/email_sent.html'
+)
     else:
 
         form = CustomUserCreationForm()
@@ -209,11 +208,10 @@ def activate(request, uidb64, token):
 
         )
 
-        return HttpResponse(
-
-            'Email verified successfully! You can now login.'
-
-        )
+        return render(
+    request,
+    'accounts/activation_success.html'
+)
 
     # =====================================
     # INVALID TOKEN
@@ -221,12 +219,10 @@ def activate(request, uidb64, token):
 
     else:
 
-        return HttpResponse(
-
-            'Activation link is invalid!'
-
-        )
-
+        return render(
+    request,
+    'accounts/activation_failed.html'
+)
 
 @login_required
 def dashboard(request):

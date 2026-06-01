@@ -36,7 +36,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
-    "http://localhost:8000",
+    "http://localhost",
 ]
 
 
@@ -65,13 +65,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
+    # Third Party Apps
+
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
+    
+
+    "dj_rest_auth",
+
     # Channels
     'channels',
-
-    # Third Party Apps
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
 
     'rest_framework',
     'rest_framework_simplejwt',
@@ -95,6 +102,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 
+
 # =========================
 # AUTHENTICATION BACKENDS
 # =========================
@@ -105,6 +113,11 @@ AUTHENTICATION_BACKENDS = [
 
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+REST_AUTH = {
+    "TOKEN_MODEL": None,
+    "USE_JWT": True,
+}
 
 
 # =========================
@@ -330,6 +343,10 @@ LOGGING = {
     },
 
 }
+
+
+SITE_URL = "http://localhost"
+
 
 
 # =========================
