@@ -16,7 +16,7 @@ A multi-author blogging platform built with Django. Authors write, schedule and 
 - **Accounts.** Email sign-up with verification, login by email, password reset, Google and GitHub login (django-allauth), and three roles: admin, author and reader.
 - **REST API.** Django REST Framework with JWT (rotating refresh tokens, blacklisted on logout), filtering, search, pagination, throttling and Swagger/ReDoc docs.
 - **Privacy by default.** Drafts and scheduled posts are visible only to their author and to admins, on the website and in the API.
-- **Tested.** 67 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
+- **Tested.** 74 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
 
 ## Screenshots
 
@@ -27,6 +27,10 @@ A multi-author blogging platform built with Django. Authors write, schedule and 
 | ![Dashboard](docs/screenshots/dashboard.jpg) | ![My posts](docs/screenshots/my-posts.jpg) |
 | **Live notifications** | **Write a post** |
 | ![Notifications](docs/screenshots/notifications.jpg) | ![Create post](docs/screenshots/create-post.jpg) |
+
+## Deployment
+
+Runs on Oracle Cloud with Docker Compose behind Caddy: Daphne for HTTP and WebSockets, a Celery worker and Celery Beat, PostgreSQL and Redis. Every push to `main` is tested in GitHub Actions and then deployed over SSH with a health check and automatic rollback. See [deploy/DEPLOY.md](deploy/DEPLOY.md).
 
 ## Tech stack
 

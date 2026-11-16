@@ -46,3 +46,5 @@ Thumbs.db
 docker_data/
 
 celerybeat-schedule
+# Production secrets on the server
+deploy/.env.prod
