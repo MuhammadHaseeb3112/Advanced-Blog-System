@@ -69,3 +69,14 @@ class CommentModelTests(TestCase):
         post = make_post()
         comment = Comment.objects.create(post=post, author=make_user(), content="Nice")
         self.assertEqual(comment.rating, 5)
+
+
+class SeedDemoCommandTests(TestCase):
+    def test_seed_demo_creates_data_once(self):
+        from django.core.management import call_command
+
+        call_command("seed_demo", verbosity=0)
+        call_command("seed_demo", verbosity=0)
+        self.assertEqual(BlogPost.objects.published().count(), 9)
+        self.assertEqual(BlogPost.objects.drafts().count(), 2)
+        self.assertTrue(Comment.objects.exists())
