@@ -52,12 +52,12 @@ def send_welcome_email(self, username, user_email):
             f"Sending welcome email to {user_email}"
         )
 
-        subject = "Welcome to DjangoBlog 🚀"
+        subject = "Welcome to Advanced Blog System 🚀"
 
         message = f"""
 Hi {username},
 
-Welcome to DjangoBlog.
+Welcome to Advanced Blog System.
 
 Your account was created successfully.
 
@@ -65,7 +65,7 @@ Start exploring blogs,
 writing posts,
 and engaging with the community.
 
-🚀 DjangoBlog Team
+🚀 Advanced Blog System Team
 """
 
         send_mail(
@@ -290,7 +290,7 @@ def send_weekly_blog_recommendations(self):
             <br>
 
             <p>
-                Read more on <b>DjangoBlog 🚀</b>
+                Read more on <b>Advanced Blog System 🚀</b>
             </p>
             """
 

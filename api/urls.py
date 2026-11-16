@@ -65,11 +65,11 @@ schema_view = get_schema_view(
 
     openapi.Info(
 
-        title="Django Blog API",
+        title="Advanced Blog System API",
 
         default_version='v1',
 
-        description="Advanced Django Blog API",
+        description="REST API for the Advanced Blog System",
 
     ),
 

@@ -553,7 +553,7 @@ X_FRAME_OPTIONS = 'DENY'
 
 SPECTACULAR_SETTINGS = {
 
-    'TITLE': 'Django Blog API',
+    'TITLE': 'Advanced Blog System API',
 
     'DESCRIPTION': (
         'Professional Django REST API '
