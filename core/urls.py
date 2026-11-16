@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path, re_path
+from django.views.static import serve
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -42,9 +43,11 @@ urlpatterns = [
 
 ]
 
+# Uploaded files. static() only works with DEBUG on, so production (with
+# SERVE_MEDIA=True, for a single-server deploy) serves them explicitly.
 if settings.DEBUG:
-
-    urlpatterns += static(
-        settings.MEDIA_URL,
-        document_root=settings.MEDIA_ROOT
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+elif settings.SERVE_MEDIA:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]

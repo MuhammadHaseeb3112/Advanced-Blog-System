@@ -145,6 +145,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.demo.DemoModeMiddleware',
     
     
 ]
@@ -184,6 +185,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'blog.context_processors.unread_notifications',
+                'core.demo.demo',
             ],
         },
     },
@@ -355,14 +357,14 @@ SITE_URL = "http://localhost"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST = env('EMAIL_HOST', default='localhost')
 
-EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_PORT = env.int('EMAIL_PORT', default=25)
 
-EMAIL_USE_TLS =  env('EMAIL_USE_TLS')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=False)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='noreply@example.com')
 
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
@@ -467,6 +469,11 @@ SIMPLE_JWT = {
 # REDIS CACHE
 # =====================================
 
+# Public demo mode (core/demo.py) and serving uploaded files from Django
+# (for a single-server deploy without a separate media server).
+DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
+SERVE_MEDIA = os.getenv('SERVE_MEDIA', 'False').lower() == 'true'
+
 # Redis host: "redis" inside Docker Compose, overridable for local runs and CI
 REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
 
@@ -513,6 +520,31 @@ CELERY_ENABLE_UTC = False
 # =====================================
 # CELERY BEAT SCHEDULER
 # =====================================
+
+# Periodic jobs. The database scheduler loads these on start and they can be
+# edited later in the Django admin (Periodic tasks).
+CELERY_BEAT_SCHEDULE = {
+    'publish-scheduled-posts': {
+        'task': 'blog.tasks.publish_scheduled_posts',
+        'schedule': 60.0,
+    },
+    'calculate-trending-posts': {
+        'task': 'blog.tasks.calculate_trending_posts',
+        'schedule': 30 * 60.0,
+    },
+    'calculate-dashboard-analytics': {
+        'task': 'blog.tasks.calculate_dashboard_analytics',
+        'schedule': 60 * 60.0,
+    },
+    'delete-old-notifications': {
+        'task': 'blog.tasks.delete_old_notifications',
+        'schedule': 24 * 60 * 60.0,
+    },
+    'weekly-recommendations': {
+        'task': 'blog.tasks.send_weekly_blog_recommendations',
+        'schedule': 7 * 24 * 60 * 60.0,
+    },
+}
 
 CELERY_BEAT_SCHEDULER = (
     'django_celery_beat.schedulers:DatabaseScheduler'

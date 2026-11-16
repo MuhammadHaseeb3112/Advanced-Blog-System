@@ -25,6 +25,36 @@
 
         </div>
 
+        {% if demo_mode %}
+        {# Public demo: one-click sign-in with the shared demo accounts #}
+        <div class="demo-box">
+            <p class="demo-title">Live demo: sign in with one click</p>
+            <div class="demo-grid">
+                {% for account in demo_accounts %}
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username" value="{{ account.email }}">
+                    <input type="hidden" name="password" value="{{ demo_password }}">
+                    <button type="submit" class="demo-btn">
+                        <strong>{{ account.label }}</strong>
+                        <span>{{ account.hint }}</span>
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+            <p class="demo-note">Demo data resets every night. Sign-up and account changes are off.</p>
+        </div>
+        <style>
+            .demo-box { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.35); border-radius: 16px; padding: 16px; margin-bottom: 22px; }
+            .demo-title { font-weight: 700; margin-bottom: 12px; text-align: center; }
+            .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .demo-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; background: #2563eb; color: #fff; display: flex; flex-direction: column; gap: 4px; align-items: center; font-family: inherit; }
+            .demo-btn span { font-size: 12px; opacity: 0.85; }
+            .demo-btn:hover { background: #1d4ed8; }
+            .demo-note { font-size: 12px; opacity: 0.75; margin-top: 10px; text-align: center; }
+        </style>
+        {% endif %}
+
         <form method="POST" class="auth-form">
 
             {% csrf_token %}
