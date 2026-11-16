@@ -1,447 +1,107 @@
-# Advanced Django Blogging Platform
+# Advanced Blog System
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
+[![CI](https://github.com/MuhammadHaseeb3112/Advanced-Blog-System/actions/workflows/ci.yml/badge.svg)](https://github.com/MuhammadHaseeb3112/Advanced-Blog-System/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Django](https://img.shields.io/badge/Django-6.0-green)
-![Django REST Framework](https://img.shields.io/badge/DRF-REST%20API-red)
-![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
-![Redis](https://img.shields.io/badge/Redis-Caching-red)
-![Celery](https://img.shields.io/badge/Celery-Background%20Tasks-green)
-![WebSockets](https://img.shields.io/badge/WebSockets-Channels-orange)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-A professional, scalable, and production-ready blogging platform built with **Django**, **Django REST Framework**, **PostgreSQL**, **Redis**, **Celery**, **Docker**, and **Django Channels**.
+A multi-author blogging platform built with Django. Authors write, schedule and publish posts; readers like, bookmark and comment; and authors see likes and comments arrive in real time over WebSockets. Background work (emails, scheduled publishing, trending scores) runs in Celery, and everything is also available as a JWT-secured REST API with OpenAPI docs.
 
-This project demonstrates modern backend engineering concepts including REST APIs, JWT authentication, asynchronous task processing, WebSockets, Docker containerization, Redis caching, PostgreSQL integration, and analytics dashboards.
+![Home page](docs/screenshots/home.jpg)
 
----
+## Highlights
 
-# Live Features
+- **Real-time updates.** Django Channels pushes like, bookmark and comment counts to everyone reading a post, and sends authors a live notification.
+- **Background jobs.** Celery and Redis send verification and welcome emails, publish scheduled posts, rank trending posts, email weekly recommendations and clean up old notifications. Celery Beat runs the schedule.
+- **Accounts.** Email sign-up with verification, login by email, password reset, Google and GitHub login (django-allauth), and three roles: admin, author and reader.
+- **REST API.** Django REST Framework with JWT (rotating refresh tokens, blacklisted on logout), filtering, search, pagination, throttling and Swagger/ReDoc docs.
+- **Privacy by default.** Drafts and scheduled posts are visible only to their author and to admins, on the website and in the API.
+- **Tested.** 67 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
 
-## Authentication System
+## Screenshots
 
-* User Registration
-* User Login & Logout
-* JWT Authentication
-* Password Change
-* Password Reset
-* Email Verification
-* Protected APIs
-* Role-Based Permissions
+| Blog list | Post page |
+|---|---|
+| ![Blog list](docs/screenshots/blog-list.jpg) | ![Post page](docs/screenshots/post-detail.jpg) |
+| **Author dashboard** | **My posts** |
+| ![Dashboard](docs/screenshots/dashboard.jpg) | ![My posts](docs/screenshots/my-posts.jpg) |
+| **Live notifications** | **Write a post** |
+| ![Notifications](docs/screenshots/notifications.jpg) | ![Create post](docs/screenshots/create-post.jpg) |
 
----
+## Tech stack
 
-## Blog Features
+| Area | Tools |
+|---|---|
+| Backend | Python 3.13, Django 6, Django REST Framework, Django Channels (Daphne) |
+| Data | PostgreSQL 16, Redis (cache, Celery broker, channel layer) |
+| Background jobs | Celery, Celery Beat (database scheduler), Flower |
+| Auth | django-allauth (email, Google, GitHub), Simple JWT, dj-rest-auth |
+| API docs | drf-spectacular (Swagger UI, ReDoc) |
+| DevOps | Docker Compose, Nginx, GitHub Actions |
 
-* Create Posts
-* Update Posts
-* Delete Posts
-* Categories Management
-* Tags Management
-* Rich Content Publishing
-* Draft & Published Posts
-* Scheduled Publishing
-* Blog Search
-* User Profiles
-* Author Profiles
+## Project structure
 
----
-
-## Engagement Features
-
-* Comments System
-* Like Posts
-* Bookmark Posts
-* Notification System
-* Trending Posts
-* Most Viewed Posts
-* Featured Posts
-
----
-
-## Analytics Dashboard
-
-* Total Users
-* Total Posts
-* Total Categories
-* Total Tags
-* Total Views
-* Total Comments
-* Platform Likes
-* Platform Bookmarks
-* Author Analytics
-* Dashboard Statistics
-* Trending Content
-* Top Categories
-
----
-
-## Real-Time Features
-
-* Django Channels
-* WebSocket Integration
-* Real-Time Notifications
-* Live Updates
-
----
-
-## Background Task Processing
-
-* Celery Integration
-* Celery Beat Scheduler
-* Automated Tasks
-* Background Processing
-* Redis Broker Support
-
----
-
-## REST API Features
-
-* Django REST Framework
-* JWT Protected APIs
-* ViewSets
-* Filtering
-* Pagination
-* Permissions
-* OpenAPI Schema
-* Swagger Documentation
-* ReDoc Documentation
-
----
-
-# Technology Stack
-
-## Backend
-
-* Python 3.12
-* Django 6
-* Django REST Framework
-* PostgreSQL
-* SQLite
-* Redis
-* Celery
-* Django Channels
-* Daphne
-
----
-
-## Frontend
-
-* HTML5
-* CSS3
-* Bootstrap
-* JavaScript
-
----
-
-## DevOps & Infrastructure
-
-* Docker
-* Docker Compose
-* Nginx
-* Git
-* GitHub
-
----
-
-# Architecture
-
-Client Browser
-
-↓
-
-Django Templates
-
-↓
-
-Django Views & DRF APIs
-
-↓
-
-PostgreSQL Database
-
-↓
-
-Redis Cache / Broker
-
-↓
-
-Celery Workers
-
-↓
-
-Django Channels (WebSockets)
-
-↓
-
-Docker + Nginx
-
----
-
-# Project Structure
-
-```bash
-accounts/
-api/
-│
-├── filters/
-├── pagination/
-├── permissions/
-├── serializers/
-├── services/
-└── views/
-│
-blog/
-core/
-nginx/
-templates/
-static/
-media/
-
-Dockerfile
-docker-compose.yml
-requirements.txt
-manage.py
-README.md
+```
+accounts/   custom user model (email login, roles), sign-up and email verification
+blog/       models, real-time consumers, Celery tasks, signals
+  views/    website views split by area: posts, interactions, dashboard, authoring, moderation
+  tests/    model, view, task and WebSocket tests
+api/        REST API: serializers, viewsets, permissions, filters, pagination
+core/       settings (base, development, production, test), ASGI/WSGI, Celery app
+templates/  server-rendered pages
 ```
 
-# Installation
+## Run it locally
 
-## Clone Repository
+With Docker:
 
 ```bash
-git clone https://github.com/MuhammadHaseeb3112/Advanced-Django-Blogging-Platform.git
-
-cd Advanced-Django-Blogging-Platform
+cp .env.example .env          # then fill in the values
+docker compose up --build       # runs migrations on start
+docker compose exec web python manage.py seed_demo
 ```
 
-## Create Virtual Environment
+Open http://localhost and sign in as `sara@demo.blog` / `DemoPass123!` (author). `seed_demo` creates three authors, a reader, nine published posts, a draft, a scheduled post, comments and likes.
 
-### Windows
-
-```bash
-python -m venv venv
-
-venv\Scripts\activate
-```
-
-### Linux / Mac
+Without Docker, start PostgreSQL and Redis yourself, then:
 
 ```bash
-python3 -m venv venv
-
-source venv/bin/activate
-```
-
-## Install Dependencies
-
-```bash
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-```
-
-# Environment Variables
-
-Create a `.env` file:
-
-```env
-SECRET_KEY=your_secret_key
-
-DEBUG=True
-
-POSTGRES_DB=django_blog
-
-POSTGRES_USER=postgres
-
-POSTGRES_PASSWORD=your_password
-
-POSTGRES_HOST=db
-
-POSTGRES_PORT=5432
-```
-
-# Database Setup
-
-## SQLite
-
-```bash
+export REDIS_HOST=127.0.0.1    # "redis" by default, for Docker Compose
 python manage.py migrate
-```
-
-## PostgreSQL
-
-Update PostgreSQL credentials in `.env`
-
-Then:
-
-```bash
-python manage.py migrate
-```
-
-# Run Development Server
-
-```bash
+python manage.py seed_demo
 python manage.py runserver
+celery -A core worker -l info  # in a second terminal
+celery -A core beat -l info    # in a third terminal
 ```
 
-Open:
+Google and GitHub login buttons appear once you add the matching *Social application* in the Django admin.
+
+## API
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/register/` | Create an account (sends a verification email) |
+| `POST /api/token/` · `/api/token/refresh/` · `/api/logout/` | JWT login, refresh, logout |
+| `/api/blogs/` | List, search, filter and create posts; `/api/blogs/<slug>/like/` and `/bookmark/` |
+| `/api/blogs/trending/` · `/most_viewed/` · `/featured/` | Ranked post lists |
+| `/api/comments/` · `/api/categories/` · `/api/tags/` · `/api/notifications/` | Related resources |
+| `/api/dashboard/` · `/api/analytics/` | Author statistics |
+| `/api/docs/` · `/api/redoc/` | Interactive documentation |
+
+## Tests
 
 ```bash
-http://127.0.0.1:8000/
+DJANGO_SETTINGS_MODULE=core.settings.test python manage.py test
 ```
 
-# Docker Setup
+The test settings swap Redis for in-memory backends and run Celery tasks eagerly, so only PostgreSQL is needed.
 
-## Build Containers
+## License
 
-```bash
-docker compose build
-```
+MIT. See [LICENSE](LICENSE).
 
-## Start Containers
+---
 
-```bash
-docker compose up
-```
-
-## Detached Mode
-
-```bash
-docker compose up -d
-```
-
-## Stop Containers
-
-```bash
-docker compose down
-```
-
-# Celery Setup
-
-## Start Celery Worker
-
-```bash
-celery -A core worker -l info
-```
-
-## Start Celery Beat
-
-```bash
-celery -A core beat -l info
-```
-
-# WebSocket Server
-
-```bash
-daphne core.asgi:application
-```
-
-# API Documentation
-
-## Swagger UI
-
-```text
-http://localhost/api/docs/
-```
-
-## ReDoc
-
-```text
-http://localhost/api/redoc/
-```
-
-## OpenAPI Schema
-
-```text
-http://localhost/api/schema/
-```
-
-# Screenshots
-
-Create an assets folder:
-
-```text
-assets/
-├── home.png
-├── dashboard.png
-├── swagger.png
-├── redoc.png
-```
-
-## Home Page
-
-```markdown
-![Home](assets/home.png)
-```
-
-## Dashboard
-
-```markdown
-![Dashboard](assets/dashboard.png)
-```
-
-## Swagger Documentation
-
-```markdown
-![Swagger](assets/swagger.png)
-```
-
-## ReDoc Documentation
-
-```markdown
-![ReDoc](assets/redoc.png)
-```
-
-# Highlights
-
-This project demonstrates:
-
-* Advanced Django Development
-* Django REST Framework
-* JWT Authentication
-* PostgreSQL Integration
-* Redis Caching
-* Celery Background Tasks
-* WebSocket Communication
-* Docker Containerization
-* Nginx Reverse Proxy
-* API Documentation
-* Clean Architecture
-* Production-Oriented Design
-
-# Future Improvements
-
-* CI/CD Pipeline
-* GitHub Actions
-* AWS Deployment
-* Kubernetes Deployment
-* Elasticsearch Integration
-* AI Content Recommendations
-* Social Authentication
-* Two-Factor Authentication
-* Advanced Monitoring
-* Multi-Tenant Blogging
-
-# Release Information
-
-Current Stable Release:
-
-```text
-v1.0.0
-```
-
-Repository:
-
-https://github.com/MuhammadHaseeb3112/Advanced-Django-Blogging-Platform
-
-# Author
-
-## Muhammad Haseeb
-
-GitHub:
-
-https://github.com/MuhammadHaseeb3112
-
-# License
-
-This project is licensed under the MIT License.
-
-© 2026 Muhammad Haseeb. All rights reserved.
+Built by [Muhammad Haseeb](https://github.com/MuhammadHaseeb3112) · [Portfolio](https://muhammadhaseeb-portfolio-six.vercel.app/) · [LinkedIn](https://www.linkedin.com/in/codewithmuhammadhaseeb)
