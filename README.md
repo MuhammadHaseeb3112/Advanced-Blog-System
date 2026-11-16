@@ -4,8 +4,11 @@
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Django](https://img.shields.io/badge/Django-6.0-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+[![Live demo](https://img.shields.io/badge/Live%20demo-mh--blog.duckdns.org-2563eb)](https://mh-blog.duckdns.org/accounts/login/)
 
 A multi-author blogging platform built with Django. Authors write, schedule and publish posts; readers like, bookmark and comment; and authors see likes and comments arrive in real time over WebSockets. Background work (emails, scheduled publishing, trending scores) runs in Celery, and everything is also available as a JWT-secured REST API with OpenAPI docs.
+
+**Live demo:** [mh-blog.duckdns.org](https://mh-blog.duckdns.org/accounts/login/). Sign in with one click as an **Author** or a **Reader**; the demo data resets every night.
 
 ![Home page](docs/screenshots/home.jpg)
 
