@@ -7,7 +7,7 @@
 
     {% include 'includes/dashboard_sidebar.html' %}
 
-    <main class="dashboard-main">
+    <section class="dashboard-main">
 
         <!-- ===================================== -->
         <!-- PAGE TOP -->
@@ -115,11 +115,11 @@
 
                                 <div>
 
-                                    <h4>
+                                    <p class="person-name">
 
                                         {{ user.username }}
 
-                                    </h4>
+                                    </p>
 
                                     <span>
 
@@ -224,7 +224,7 @@
 
         </div>
 
-    </main>
+    </section>
 
 </div>
 
@@ -385,7 +385,7 @@
 
 }
 
-.user-info h4 {
+.user-info .person-name {
 
     margin-bottom: 4px;
 

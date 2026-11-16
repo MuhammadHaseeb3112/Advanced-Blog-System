@@ -4,6 +4,13 @@ from django.urls import include, path, re_path
 from django.shortcuts import redirect
 from django.views.static import serve
 
+
+def cached_media(request, path, document_root=None):
+    """Serve an uploaded file and let browsers cache it for a day."""
+    response = serve(request, path, document_root=document_root)
+    response['Cache-Control'] = 'public, max-age=86400'
+    return response
+
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -56,5 +63,5 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 elif settings.SERVE_MEDIA:
     urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+        re_path(r'^media/(?P<path>.*)$', cached_media, {'document_root': settings.MEDIA_ROOT}),
     ]

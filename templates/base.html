@@ -31,12 +31,9 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- FONT AWESOME -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
 
     <style>
         .live-notification-toast {
@@ -800,9 +797,9 @@
 
                 <input type="text" name="search" placeholder="Search blogs, categories, tags...">
 
-                <button type="submit">
+                <button type="submit" aria-label="Search">
 
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    {% icon 'search' %}
 
                 </button>
 
@@ -859,7 +856,7 @@
 
                     </div>
 
-                    <i class="fa-solid fa-chevron-down"></i>
+                    {% icon 'chevron-down' %}
 
                 </div>
 
@@ -869,7 +866,7 @@
 
                     <a href="{% url 'dashboard' %}">
 
-                        <i class="fa-solid fa-table-columns"></i>
+                        {% icon 'dashboard' %}
 
                         Dashboard
 
@@ -883,7 +880,7 @@
 
                         <button class="logout-btn">
 
-                            <i class="fa-solid fa-right-from-bracket"></i>
+                            {% icon 'logout' %}
 
                             Logout
 
@@ -923,12 +920,12 @@
     <!-- MAIN CONTENT -->
     <!-- ===================================== -->
 
-    <div class="container">
+    <main class="container" id="main">
 
         {% block content %}
         {% endblock %}
 
-    </div>
+    </main>
 
     <!-- ===================================== -->
     <!-- FOOTER -->
@@ -949,13 +946,13 @@
                 <p>A multi-author blogging platform with live likes, comments and notifications, built with Django, Channels and Celery.</p>
             </div>
             <div>
-                <h4>Explore</h4>
+                <p class="footer-heading">Explore</p>
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'blog_list' %}">All posts</a>
                 <a href="/api/docs/">REST API docs</a>
             </div>
             <div>
-                <h4>Project</h4>
+                <p class="footer-heading">Project</p>
                 <a href="https://github.com/MuhammadHaseeb3112/Advanced-Blog-System" target="_blank" rel="noopener">Source on GitHub</a>
                 <a href="https://muhammadhaseeb-portfolio-six.vercel.app/" target="_blank" rel="noopener">Built by Muhammad Haseeb</a>
             </div>

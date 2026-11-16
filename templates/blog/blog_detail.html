@@ -153,7 +153,7 @@
     .bookmark-btn {
 
         background: #fef3c7;
-        color: #d97706;
+        color: #92400e;
 
     }
 
@@ -166,7 +166,7 @@
     .rating-box {
 
         background: #ecfccb;
-        color: #65a30d;
+        color: #3f6212;
         padding: 14px 24px;
         border-radius: 14px;
         font-weight: 600;
@@ -245,7 +245,7 @@
     .comment-rating {
 
         background: #fef3c7;
-        color: #d97706;
+        color: #92400e;
         padding: 10px 14px;
         border-radius: 12px;
         font-weight: 600;
@@ -573,7 +573,7 @@
 
         {% if post.featured_image %}
 
-        <img src="{{ post.featured_image.url }}">
+        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" fetchpriority="high">
 
         {% else %}
 
@@ -629,11 +629,11 @@
 
             <div>
 
-                <h4>
+                <p class="person-name">
 
                     {{ post.author|display_name }}
 
-                </h4>
+                </p>
 
                 <p>
 
@@ -807,11 +807,11 @@
 
                         <div>
 
-                            <h4>
+                            <p class="person-name">
 
                                 {{ comment.author|display_name }}
 
-                            </h4>
+                            </p>
 
                             <small>
 
@@ -1002,7 +1002,7 @@
 
                     {% if related.featured_image %}
 
-                    <img src="{{ related.featured_image.url }}" alt="{{ related.title }}">
+                    <img src="{{ related.featured_image.url }}" alt="" loading="lazy">
 
                     {% endif %}
 
@@ -1252,6 +1252,7 @@
     };
 
 
+    {% if request.user.is_authenticated %}
 
     // =========================================
     // NOTIFICATION SOCKET
@@ -1367,6 +1368,7 @@
         console.log(e);
 
     };
+    {% endif %}
 
 
 

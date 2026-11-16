@@ -151,7 +151,9 @@ def cover_image(title, category, index):
     MOTIFS.get(category, _code_window)(ImageDraw.Draw(layer), rnd)
     image = Image.alpha_composite(image, layer).convert("RGB")
     buffer = BytesIO()
-    image.save(buffer, format="JPEG", quality=88)
+    # 960px wide is plenty for cards and the post header, and keeps files small
+    image = image.resize((960, 504), Image.LANCZOS)
+    image.save(buffer, format="JPEG", quality=80, optimize=True, progressive=True)
     return ContentFile(buffer.getvalue(), name=f"{slugify(title)[:50]}.jpg")
 
 
