@@ -467,13 +467,16 @@ SIMPLE_JWT = {
 # REDIS CACHE
 # =====================================
 
+# Redis host: "redis" inside Docker Compose, overridable for local runs and CI
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
+
 CACHES = {
 
     "default": {
 
         "BACKEND": "django_redis.cache.RedisCache",
 
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": f"redis://{REDIS_HOST}:6379/1",
 
         "OPTIONS": {
             "CLIENT_CLASS":
@@ -491,9 +494,9 @@ CACHES = {
 # CELERY CONFIGURATION
 # =====================================
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379/0'
 
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379/0'
 
 CELERY_ACCEPT_CONTENT = [
     'json'
@@ -527,7 +530,7 @@ CHANNEL_LAYERS = {
 
         'CONFIG': {
 
-            'hosts': [('redis', 6379)],
+            'hosts': [(REDIS_HOST, 6379)],
 
             "capacity": 1500,
 
