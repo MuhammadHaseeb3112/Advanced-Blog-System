@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.templatetags.static import static as static_url
 from django.urls import include, path, re_path
+from django.shortcuts import redirect
 from django.views.static import serve
 
 from django.conf import settings
@@ -9,6 +11,11 @@ from .views import home
 
 
 urlpatterns = [
+
+    path(
+        'favicon.ico',
+        lambda request: redirect(static_url('images/favicon.ico'), permanent=True)
+    ),
 
     path(
         'admin/',

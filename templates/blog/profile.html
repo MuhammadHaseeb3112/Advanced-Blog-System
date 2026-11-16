@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Profile · MHBlogs{% endblock %}
 
 {% block content %}
 
@@ -57,19 +58,7 @@
 
                     <span class="role-badge">
 
-                        {% if request.user.is_superuser %}
-
-                            Administrator
-
-                        {% elif request.user.is_staff %}
-
-                            Author
-
-                        {% else %}
-
-                            Reader
-
-                        {% endif %}
+                        {% if request.user.role == 'admin' %}Administrator{% elif request.user.role == 'author' %}Author{% else %}Reader{% endif %}
 
                     </span>
 
@@ -272,8 +261,8 @@
     background:
         linear-gradient(
             135deg,
-            #2563eb,
-            #3b82f6
+            #4f46e5,
+            #6366f1
         );
 
 }
@@ -296,7 +285,7 @@
 
     border-radius: 50%;
 
-    background: #2563eb;
+    background: #4f46e5;
 
     color: white;
 
@@ -344,7 +333,7 @@
 
     background: #dbeafe;
 
-    color: #2563eb;
+    color: #4f46e5;
 
     padding: 10px 18px;
 
@@ -486,7 +475,7 @@
 
 .save-btn {
 
-    background: #2563eb;
+    background: #4f46e5;
 
     color: white;
 
@@ -508,7 +497,7 @@
 
 .save-btn:hover {
 
-    background: #1d4ed8;
+    background: #4338ca;
 
 }
 

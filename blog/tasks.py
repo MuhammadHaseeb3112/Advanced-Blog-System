@@ -52,12 +52,12 @@ def send_welcome_email(self, username, user_email):
             f"Sending welcome email to {user_email}"
         )
 
-        subject = "Welcome to Advanced Blog System 🚀"
+        subject = "Welcome to MHBlogs 🚀"
 
         message = f"""
 Hi {username},
 
-Welcome to Advanced Blog System.
+Welcome to MHBlogs.
 
 Your account was created successfully.
 
@@ -65,7 +65,7 @@ Start exploring blogs,
 writing posts,
 and engaging with the community.
 
-🚀 Advanced Blog System Team
+🚀 MHBlogs Team
 """
 
         send_mail(
@@ -290,7 +290,7 @@ def send_weekly_blog_recommendations(self):
             <br>
 
             <p>
-                Read more on <b>Advanced Blog System 🚀</b>
+                Read more on <b>MHBlogs 🚀</b>
             </p>
             """
 

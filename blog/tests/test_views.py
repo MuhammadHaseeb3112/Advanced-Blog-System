@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from blog.models import BlogPost, Comment, Notification
 
@@ -160,3 +160,24 @@ class StaffPageTests(TestCase):
     def test_notifications_page_is_for_authors_only(self):
         self.client.force_login(make_user(role="user"))
         self.assertEqual(self.client.get("/notifications/").status_code, 302)
+
+
+class BrandingAndMetaTests(TestCase):
+    def test_post_page_has_title_and_share_preview(self):
+        from .factories import make_post as _make_post
+
+        post = _make_post(title="Sharing works")
+        response = self.client.get(f"/blogs/{post.slug}/")
+        self.assertContains(response, "<title>Sharing works · MHBlogs</title>", html=False)
+        self.assertContains(response, 'property="og:title" content="Sharing works"')
+
+    def test_favicon_redirects_to_static_file(self):
+        response = self.client.get("/favicon.ico")
+        self.assertEqual(response.status_code, 301)
+        self.assertIn("favicon", response["Location"])
+
+    @override_settings(DEBUG=False)
+    def test_custom_404_page(self):
+        response = self.client.get("/does-not-exist/")
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "Page not found", status_code=404)

@@ -9,11 +9,21 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-
-        Advanced Blog System
-
-    </title>
+    <title>{% block title %}MHBlogs · Ideas worth reading, written by developers{% endblock %}</title>
+    <meta name="description" content="{% block description %}Practical articles on Django, APIs, DevOps and frontend. Live likes, comments and notifications over WebSockets.{% endblock %}">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="icon" href="{% static 'brand/mark.svg' %}" type="image/svg+xml">
+    <link rel="icon" href="{% static 'brand/favicon-32.png' %}" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="{% static 'brand/apple-touch-icon.png' %}">
+    <meta property="og:site_name" content="MHBlogs">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}MHBlogs · Ideas worth reading, written by developers{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Practical articles on Django, APIs, DevOps and frontend. Live likes, comments and notifications over WebSockets.{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'brand/og-default.jpg' %}{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
 
     <!-- GOOGLE FONT -->
 
@@ -161,7 +171,7 @@
 
             font-weight: 800;
 
-            color: #2563eb;
+            color: #4f46e5;
 
             letter-spacing: -1px;
 
@@ -217,7 +227,7 @@
 
             height: 2px;
 
-            background: #2563eb;
+            background: #4f46e5;
 
             transition: 0.3s;
 
@@ -225,7 +235,7 @@
 
         .nav-links a:hover {
 
-            color: #2563eb;
+            color: #4f46e5;
 
         }
 
@@ -281,12 +291,12 @@
 
         .search-bar input:focus {
 
-            border-color: #2563eb;
+            border-color: #4f46e5;
 
             background: white;
 
             box-shadow:
-                0 0 0 4px rgba(37, 99, 235, 0.08);
+                0 0 0 4px rgba(79,70,229, 0.08);
 
         }
 
@@ -308,7 +318,7 @@
 
             border-radius: 14px;
 
-            background: #2563eb;
+            background: #4f46e5;
 
             color: white;
 
@@ -320,7 +330,7 @@
 
         .search-bar button:hover {
 
-            background: #1d4ed8;
+            background: #4338ca;
 
         }
 
@@ -331,8 +341,8 @@
         .nav-btn {
 
             background: linear-gradient(135deg,
-                    #2563eb,
-                    #1d4ed8);
+                    #4f46e5,
+                    #4338ca);
 
             color: white !important;
 
@@ -345,7 +355,7 @@
             transition: 0.3s;
 
             box-shadow:
-                0 8px 20px rgba(37, 99, 235, 0.18);
+                0 8px 20px rgba(79,70,229, 0.18);
 
         }
 
@@ -354,7 +364,7 @@
             transform: translateY(-2px);
 
             box-shadow:
-                0 12px 30px rgba(37, 99, 235, 0.28);
+                0 12px 30px rgba(79,70,229, 0.28);
 
         }
 
@@ -378,9 +388,9 @@
 
         .outline-btn:hover {
 
-            border-color: #2563eb;
+            border-color: #4f46e5;
 
-            color: #2563eb;
+            color: #4f46e5;
 
             background: #eff6ff;
 
@@ -434,8 +444,8 @@
             border-radius: 50%;
 
             background: linear-gradient(135deg,
-                    #2563eb,
-                    #1d4ed8);
+                    #4f46e5,
+                    #4338ca);
 
             color: white;
 
@@ -522,7 +532,7 @@
 
             background: #f9fafb;
 
-            color: #2563eb;
+            color: #4f46e5;
 
         }
 
@@ -566,7 +576,7 @@
 
             background: #f9fafb;
 
-            color: #2563eb;
+            color: #4f46e5;
 
         }
 
@@ -754,9 +764,9 @@
 
             <!-- LOGO -->
 
-            <a href="/" class="logo">
+            <a href="/" class="logo" aria-label="MHBlogs home">
 
-                AdvancedBlog
+                {% include 'includes/logo.html' with id='nav' %}
 
             </a>
 
@@ -935,7 +945,7 @@
     <footer class="site-footer">
         <div class="footer-grid">
             <div>
-                <div class="footer-brand">AdvancedBlog</div>
+                <div class="footer-brand">{% include 'includes/logo.html' with id='foot' size='sm' %}</div>
                 <p>A multi-author blogging platform with live likes, comments and notifications, built with Django, Channels and Celery.</p>
             </div>
             <div>
@@ -951,7 +961,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span>Advanced Blog System © 2026</span>
+            <span>MHBlogs © 2026</span>
             <span>Django · Channels · Celery · PostgreSQL · Redis</span>
         </div>
     </footer>

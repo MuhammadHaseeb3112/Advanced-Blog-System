@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Check your email · MHBlogs{% endblock %}
 
 {% block content %}
 
@@ -51,7 +52,7 @@
         overflow: hidden;
         padding: 40px 20px;
         background:
-            radial-gradient(circle at top left, #2563eb 0%, transparent 35%),
+            radial-gradient(circle at top left, #4f46e5 0%, transparent 35%),
             radial-gradient(circle at bottom right, #7c3aed 0%, transparent 35%),
             linear-gradient(135deg, #0f172a, #111827, #0f172a);
     }
@@ -65,7 +66,7 @@
     .circle-1 {
         width: 350px;
         height: 350px;
-        background: #2563eb;
+        background: #4f46e5;
         top: -120px;
         left: -120px;
     }
@@ -129,14 +130,14 @@
         font-weight: 700;
         color: white;
         background: linear-gradient(135deg,
-                #2563eb,
+                #4f46e5,
                 #7c3aed);
         transition: .3s;
     }
 
     .login-btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(37, 99, 235, .35);
+        box-shadow: 0 15px 30px rgba(79,70,229, .35);
     }
 
     @keyframes fadeUp {

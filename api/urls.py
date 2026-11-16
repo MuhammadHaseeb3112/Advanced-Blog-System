@@ -65,11 +65,11 @@ schema_view = get_schema_view(
 
     openapi.Info(
 
-        title="Advanced Blog System API",
+        title="MHBlogs API",
 
         default_version='v1',
 
-        description="REST API for the Advanced Blog System",
+        description="REST API for MHBlogs",
 
     ),
 

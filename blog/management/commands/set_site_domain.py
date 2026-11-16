@@ -17,6 +17,6 @@ class Command(BaseCommand):
             self.stdout.write("No public host in ALLOWED_HOSTS; Site left unchanged.")
             return
         Site.objects.update_or_create(
-            id=settings.SITE_ID, defaults={"domain": hosts[0], "name": "Advanced Blog System"}
+            id=settings.SITE_ID, defaults={"domain": hosts[0], "name": "MHBlogs"}
         )
         self.stdout.write(f"Site domain set to {hosts[0]}")

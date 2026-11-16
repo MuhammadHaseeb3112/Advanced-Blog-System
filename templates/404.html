@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Page not found · MHBlogs{% endblock %}
+
+{% block content %}
+<div class="auth-simple">
+    <div class="auth-simple-card">
+        <div class="icon">🧭</div>
+        <h1>Page not found</h1>
+        <p>The page you are looking for was moved, deleted or never existed.</p>
+        <a href="/" class="btn-primary">Go to home</a>
+        <a href="{% url 'blog_list' %}" class="back-link">Browse all articles →</a>
+    </div>
+</div>
+{% endblock %}

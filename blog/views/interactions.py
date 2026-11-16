@@ -217,7 +217,7 @@ def like_post(request, slug):
 
                     'type': 'send_notification',
 
-                    'message': f'{request.user.username} liked your post ❤️',
+                    'message': f'{request.user.get_full_name() or request.user.username} liked your post ❤️',
 
                     'unread_count': unread_count,
 
@@ -372,7 +372,7 @@ def add_comment(request, slug):
 
                 'type': 'send_notification',
 
-                'message': f'{request.user.username} commented on your post 💬',
+                'message': f'{request.user.get_full_name() or request.user.username} commented on your post 💬',
 
                 'unread_count': unread_count,
 

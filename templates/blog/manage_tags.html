@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Tags · MHBlogs{% endblock %}
 
 {% block content %}
 
@@ -68,7 +69,7 @@
 
             <form method="GET" class="search-form">
 
-                <input type="text" name="search" value="{{ search_query }}" placeholder="Search tags...">
+                <input type="text" name="search" value="{{ search_query|default_if_none:'' }}" placeholder="Search tags...">
 
                 <button type="submit">
 
@@ -326,7 +327,7 @@
 
         background: #dbeafe;
 
-        color: #2563eb;
+        color: #4f46e5;
 
         padding: 10px 18px;
 
@@ -356,7 +357,7 @@
 
         background: #eff6ff;
 
-        color: #2563eb;
+        color: #4f46e5;
 
         padding: 16px 22px;
 
@@ -477,7 +478,7 @@
 
     .form-group button {
 
-        background: #2563eb;
+        background: #4f46e5;
 
         color: white;
 
@@ -539,7 +540,7 @@
 
         background: #dbeafe;
 
-        color: #2563eb;
+        color: #4f46e5;
 
         display: flex;
 

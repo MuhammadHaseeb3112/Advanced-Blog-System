@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load blog_extras %}
+{% block title %}Notifications · MHBlogs{% endblock %}
 
 {% block content %}
 
@@ -36,7 +38,7 @@
 
             <h3>
 
-                ❤️ {{ notification.sender.username }}
+                ❤️ {{ notification.sender|display_name }}
                 liked your post
 
             </h3>
@@ -47,7 +49,7 @@
 
             <h3>
 
-                💬 {{ notification.sender.username }}
+                💬 {{ notification.sender|display_name }}
                 commented on your post
 
             </h3>
@@ -112,7 +114,7 @@
 
     background: #eff6ff;
 
-    color: #2563eb;
+    color: #4f46e5;
 
     padding: 8px 16px;
 
@@ -167,7 +169,7 @@
 
 .notification-content a {
 
-    color: #2563eb;
+    color: #4f46e5;
 
     text-decoration: none;
 

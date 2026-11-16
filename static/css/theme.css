@@ -17,13 +17,20 @@
 
 body { background: var(--page); color: var(--ink); }
 
-/* ---------- Brand accents ---------- */
-.logo {
-    background: var(--brand-grad);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent !important;
-}
+/* ---------- Brand ---------- */
+.logo { display: inline-flex; align-items: center; }
+.brand { display: inline-flex; align-items: center; gap: 11px; }
+.brand-mark { width: 40px; height: 40px; flex: none; filter: drop-shadow(0 6px 14px rgba(79, 70, 229, .35)); transition: transform .3s ease; }
+.logo:hover .brand-mark { transform: rotate(-8deg) scale(1.05); }
+.brand-dot { animation: brand-pulse 2.4s ease-in-out infinite; transform-origin: 22px 22px; }
+@keyframes brand-pulse { 50% { transform: scale(1.35); opacity: .75; } }
+.brand-name { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: var(--ink); line-height: 1; }
+.brand-name span { background: var(--brand-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.brand--sm .brand-mark { width: 32px; height: 32px; }
+.brand--sm .brand-name { font-size: 22px; }
+.site-footer .brand-name { color: #fff; }
+.site-footer .brand-name span { background: linear-gradient(90deg, #a5b4fc, #f0abfc); -webkit-background-clip: text; background-clip: text; }
+@media (prefers-reduced-motion: reduce) { .brand-dot { animation: none; } }
 
 .nav-btn,
 .read-btn,
@@ -149,3 +156,74 @@ body { background: var(--page); color: var(--ink); }
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
 }
 @media (max-width: 768px) { .site-footer .footer-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Simple auth / status pages ---------- */
+.auth-simple, .success-container { min-height: 62vh; display: grid; place-items: center; padding: 40px 0; }
+.auth-simple-card, .success-card {
+    width: 100%; max-width: 460px; background: #fff; border-radius: 24px; padding: 40px 36px;
+    box-shadow: var(--shadow-md); border: 1px solid rgba(15, 23, 42, .05); text-align: center;
+}
+.auth-simple-card .icon, .success-card .icon {
+    width: 68px; height: 68px; margin: 0 auto 18px; border-radius: 20px; display: grid; place-items: center;
+    font-size: 32px; background: #eef2ff;
+}
+.auth-simple-card h1, .success-card h1 { font-size: 28px; letter-spacing: -.5px; margin-bottom: 10px; color: var(--ink); }
+.auth-simple-card > p, .success-card > p { color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+.auth-simple-card form { text-align: left; }
+.auth-simple-card form p { margin-bottom: 16px; }
+.auth-simple-card label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 7px; color: #334155; }
+.auth-simple-card input[type=email], .auth-simple-card input[type=password], .auth-simple-card input[type=text] {
+    width: 100%; padding: 13px 15px; border-radius: 12px; border: 1px solid #e2e8f0; font: inherit; background: #f8fafc;
+}
+.auth-simple-card input:focus { outline: none; border-color: var(--brand-1); box-shadow: 0 0 0 4px rgba(79, 70, 229, .12); background: #fff; }
+.auth-simple-card .helptext, .auth-simple-card ul { font-size: 12.5px; color: var(--muted); margin-top: 6px; padding-left: 18px; text-align: left; }
+.auth-simple-card .errorlist { color: #dc2626; list-style: none; padding: 0; }
+.auth-simple-card button, .btn-login, .auth-simple-card .btn-primary {
+    display: inline-block; width: 100%; padding: 14px; border: none; border-radius: 14px; cursor: pointer;
+    background: var(--brand-grad); color: #fff !important; font-weight: 700; font-size: 15px; text-align: center;
+    transition: transform .2s, box-shadow .2s;
+}
+.auth-simple-card button:hover, .btn-login:hover, .auth-simple-card .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(79, 70, 229, .3); }
+.auth-simple-card .back-link { display: inline-block; margin-top: 18px; color: var(--brand-1); font-weight: 600; font-size: 14px; }
+
+/* ---------- Tablet / mobile ---------- */
+@media (max-width: 1000px) {
+    /* dashboard: sidebar becomes a scrollable pill bar above the content */
+    .dashboard-container { flex-direction: column; }
+    .admin-layout { gap: 18px !important; }
+    .sidebar { width: 100% !important; min-width: 0 !important; height: auto !important; position: relative !important; top: 0 !important; padding: 14px !important; border-radius: 18px !important; }
+    .sidebar-top { display: none; }
+    .sidebar-links { display: flex !important; flex-direction: row !important; gap: 8px !important; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .sidebar-links::-webkit-scrollbar { display: none; }
+    .sidebar-links a { flex: none; white-space: nowrap; margin: 0 !important; padding: 10px 14px !important; }
+    .dashboard-main { padding: 20px 0 !important; min-width: 0; }
+}
+
+@media (max-width: 768px) {
+    nav { position: sticky; padding: 10px 4% !important; flex-direction: row !important; flex-wrap: wrap; align-items: center !important; gap: 10px !important; }
+    .nav-left { flex-direction: row !important; align-items: center !important; width: auto !important; gap: 16px !important; }
+    .nav-links { gap: 14px !important; }
+    .nav-links a { font-size: 15px; }
+    .nav-right { width: 100% !important; flex-wrap: nowrap !important; gap: 8px !important; }
+    .search-bar { flex: 1; min-width: 0; width: auto !important; }
+    .search-bar input { min-width: 0; width: 100% !important; padding-top: 10px; padding-bottom: 10px; }
+    .outline-btn, .nav-btn { padding: 10px 14px !important; font-size: 14px !important; white-space: nowrap; }
+    .user-box { padding: 4px !important; gap: 0 !important; }
+    .user-box > div:not(.avatar), .user-box > i { display: none !important; }
+    .brand-mark { width: 32px; height: 32px; }
+    .brand-name { font-size: 22px; }
+    .container { width: 92% !important; }
+    .dashboard-main h1, .page-title { font-size: 30px !important; }
+    .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+    .stat-card { padding: 16px !important; gap: 10px !important; }
+    .stat-icon { width: 44px !important; height: 44px !important; font-size: 22px !important; }
+    input, select, textarea { max-width: 100%; }
+}
+
+@media (max-width: 768px) {
+    .users-table-wrapper { overflow-x: auto !important; }
+    .users-table { min-width: 640px; }
+    .stat-card { flex-direction: column !important; align-items: flex-start !important; }
+    .stat-info h3 { font-size: 13px !important; }
+}
+.sidebar-top h2 { font-size: 22px !important; white-space: nowrap; }

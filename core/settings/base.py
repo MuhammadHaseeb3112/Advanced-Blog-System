@@ -585,7 +585,7 @@ X_FRAME_OPTIONS = 'DENY'
 
 SPECTACULAR_SETTINGS = {
 
-    'TITLE': 'Advanced Blog System API',
+    'TITLE': 'MHBlogs API',
 
     'DESCRIPTION': (
         'Professional Django REST API '

@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}{{ post.title }} · MHBlogs{% endblock %}
+{% block description %}{{ post.short_description|default:post.content|striptags|truncatechars:160 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.short_description|default:post.content|striptags|truncatechars:200 }}{% endblock %}
+{% block og_image %}{% if post.featured_image %}{{ request.scheme }}://{{ request.get_host }}{{ post.featured_image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 {% load blog_extras %}
 
 {% block content %}
@@ -43,7 +49,7 @@
     .category-badge {
 
         background: #eff6ff;
-        color: #2563eb;
+        color: #4f46e5;
         padding: 10px 18px;
         border-radius: 50px;
         font-weight: 600;
@@ -77,7 +83,7 @@
 
         width: 60px;
         height: 60px;
-        background: #2563eb;
+        background: #4f46e5;
         color: white;
         border-radius: 50%;
         display: flex;
@@ -220,7 +226,7 @@
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background: #2563eb;
+        background: #4f46e5;
         color: white;
         display: flex;
         align-items: center;
@@ -270,7 +276,7 @@
 
     .submit-btn {
 
-        background: #2563eb;
+        background: #4f46e5;
         color: white;
         border: none;
         padding: 16px 28px;
@@ -394,13 +400,13 @@
 
         background:
             linear-gradient(135deg,
-                #2563eb,
-                #3b82f6);
+                #4f46e5,
+                #6366f1);
 
         color: white;
 
         box-shadow:
-            0 10px 30px rgba(37, 99, 235, 0.3);
+            0 10px 30px rgba(79,70,229, 0.3);
 
     }
 
@@ -485,8 +491,8 @@
 
         background:
             linear-gradient(135deg,
-                #2563eb,
-                #3b82f6);
+                #4f46e5,
+                #6366f1);
 
         color: white;
 
@@ -499,7 +505,7 @@
         transition: 0.3s ease;
 
         box-shadow:
-            0 10px 30px rgba(37, 99, 235, 0.25);
+            0 10px 30px rgba(79,70,229, 0.25);
 
     }
 
@@ -509,7 +515,7 @@
             translateY(-4px);
 
         box-shadow:
-            0 15px 40px rgba(37, 99, 235, 0.35);
+            0 15px 40px rgba(79,70,229, 0.35);
 
     }
 
@@ -929,7 +935,7 @@
 
         <p class="login-text">
 
-            Join Advanced Blog System to unlock all interactive features
+            Join MHBlogs to unlock all interactive features
             and engage with the blogging community.
 
         </p>

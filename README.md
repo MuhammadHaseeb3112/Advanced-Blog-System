@@ -1,12 +1,14 @@
-# Advanced Blog System
+<p><img src="static/brand/mark.svg" width="56" alt="MHBlogs logo"></p>
+
+# MHBlogs: Advanced Blog System
 
 [![CI](https://github.com/MuhammadHaseeb3112/Advanced-Blog-System/actions/workflows/ci.yml/badge.svg)](https://github.com/MuhammadHaseeb3112/Advanced-Blog-System/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Django](https://img.shields.io/badge/Django-6.0-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-[![Live demo](https://img.shields.io/badge/Live%20demo-mh--blog.duckdns.org-2563eb)](https://mh-blog.duckdns.org/accounts/login/)
+[![Live demo](https://img.shields.io/badge/Live%20demo-mh--blog.duckdns.org-4f46e5)](https://mh-blog.duckdns.org/accounts/login/)
 
-A multi-author blogging platform built with Django. Authors write, schedule and publish posts; readers like, bookmark and comment; and authors see likes and comments arrive in real time over WebSockets. Background work (emails, scheduled publishing, trending scores) runs in Celery, and everything is also available as a JWT-secured REST API with OpenAPI docs.
+**MHBlogs** is a multi-author blogging platform built with Django. Authors write, schedule and publish posts; readers like, bookmark and comment; and authors see likes and comments arrive in real time over WebSockets. Background work (emails, scheduled publishing, trending scores) runs in Celery, and everything is also available as a JWT-secured REST API with OpenAPI docs.
 
 **Live demo:** [mh-blog.duckdns.org](https://mh-blog.duckdns.org/accounts/login/). Sign in with one click as an **Author**, a **Reader** or a read-only **Admin** (analytics dashboard, users and moderation pages); the demo data resets every night.
 
@@ -20,7 +22,7 @@ A multi-author blogging platform built with Django. Authors write, schedule and 
 - **REST API.** Django REST Framework with JWT (rotating refresh tokens, blacklisted on logout), filtering, search, pagination, throttling and Swagger/ReDoc docs.
 - **Privacy by default.** Drafts and scheduled posts are visible only to their author and to admins, on the website and in the API.
 - **Analytics dashboard.** Admins see platform totals, a top-categories chart and trending posts, precomputed hourly by Celery and cached in Redis.
-- **Tested.** 81 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
+- **Tested.** 84 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
 
 ## Screenshots
 

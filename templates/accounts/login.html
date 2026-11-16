@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Sign in · MHBlogs{% endblock %}
 {% load socialaccount %}
 
 {% block content %}
@@ -13,11 +14,7 @@
 
         <div class="logo-area">
 
-            <div class="logo-icon">
-                🚀
-            </div>
-
-            <h1>AdvancedBlog</h1>
+            <div class="auth-brand">{% include 'includes/logo.html' with id='auth' %}</div>
 
             <p>
                 Welcome back! Sign in to access your dashboard.
@@ -45,12 +42,12 @@
             <p class="demo-note">Demo data resets every night. Sign-up and account changes are off.</p>
         </div>
         <style>
-            .demo-box { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.35); border-radius: 16px; padding: 16px; margin-bottom: 22px; }
+            .demo-box { background: rgba(79,70,229, 0.08); border: 1px solid rgba(79,70,229, 0.35); border-radius: 16px; padding: 16px; margin-bottom: 22px; }
             .demo-title { font-weight: 700; margin-bottom: 12px; text-align: center; }
             .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-            .demo-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; background: #2563eb; color: #fff; display: flex; flex-direction: column; gap: 4px; align-items: center; font-family: inherit; }
+            .demo-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; background: #4f46e5; color: #fff; display: flex; flex-direction: column; gap: 4px; align-items: center; font-family: inherit; }
             .demo-btn span { font-size: 12px; opacity: 0.85; }
-            .demo-btn:hover { background: #1d4ed8; }
+            .demo-btn:hover { background: #4338ca; }
             .demo-note { font-size: 12px; opacity: 0.75; margin-top: 10px; text-align: center; }
         </style>
         {% endif %}
@@ -142,7 +139,7 @@
         padding: 40px 20px;
 
         background:
-            radial-gradient(circle at top left, #2563eb55, transparent 30%),
+            radial-gradient(circle at top left, #4f46e555, transparent 30%),
             radial-gradient(circle at bottom right, #7c3aed55, transparent 35%),
             linear-gradient(135deg,
                 #020617,
@@ -160,7 +157,7 @@
     .circle-1 {
         width: 400px;
         height: 400px;
-        background: #2563eb;
+        background: #4f46e5;
         top: -150px;
         left: -100px;
     }
@@ -208,6 +205,11 @@
 
         animation: slideUp .8s ease;
     }
+
+    .auth-brand { display: flex; justify-content: center; margin-bottom: 14px; }
+    .auth-brand .brand-mark { width: 52px; height: 52px; }
+    .auth-brand .brand-name { color: #fff; font-size: 36px; }
+    .auth-brand .brand-name span { background: linear-gradient(90deg, #a5b4fc, #f0abfc); -webkit-background-clip: text; background-clip: text; }
 
     .logo-area {
         text-align: center;
@@ -293,7 +295,7 @@
 
         background:
             linear-gradient(135deg,
-                #2563eb,
+                #4f46e5,
                 #7c3aed);
 
         color: white;
@@ -312,7 +314,7 @@
             translateY(-4px);
 
         box-shadow:
-            0 15px 30px rgba(37, 99, 235, .35);
+            0 15px 30px rgba(79,70,229, .35);
     }
 
     .forgot-link {
