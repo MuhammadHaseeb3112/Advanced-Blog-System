@@ -1,3 +1,5 @@
+from django.db.models import Q
+from django.utils import timezone
 from django.core.cache import cache
 from rest_framework.views import APIView
 from django.db.models import Sum, Count
@@ -234,7 +236,22 @@ class BlogPostViewSet(
             'likes',
             'bookmarks',
 
-        ).all()
+        ).filter(
+            self._visible_posts_filter()
+        )
+
+    def _visible_posts_filter(self):
+        # Published posts are public; drafts and scheduled posts
+        # are only visible to their author and to admins.
+        user = self.request.user
+        published = Q(status='published') & (
+            Q(publish_at__lte=timezone.now()) | Q(publish_at__isnull=True)
+        )
+        if not user.is_authenticated:
+            return published
+        if user.role == 'admin' or user.is_superuser:
+            return Q()
+        return published | Q(author=user)
 
     # =====================================
     # DYNAMIC SERIALIZERS

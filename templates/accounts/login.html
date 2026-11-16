@@ -45,12 +45,17 @@
 
         </div>
 
+        {# Social login buttons only appear for providers configured in the admin (Social applications). #}
+        {% get_providers as socialaccount_providers %}
+        {% if socialaccount_providers %}
         <div class="divider">
             <span>OR CONTINUE WITH</span>
         </div>
 
         <div class="social-grid">
 
+            {% for provider in socialaccount_providers %}
+            {% if provider.id == 'google' %}
             <a href="{% provider_login_url 'google' %}" class="social-btn google">
 
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="22">
@@ -58,7 +63,7 @@
                 <span>Continue with Google</span>
 
             </a>
-
+            {% elif provider.id == 'github' %}
             <a href="{% provider_login_url 'github' %}" class="social-btn github">
 
                 <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
@@ -76,8 +81,11 @@
                 <span>Continue with GitHub</span>
 
             </a>
+            {% endif %}
+            {% endfor %}
 
         </div>
+        {% endif %}
 
         <div class="bottom-text">
 
