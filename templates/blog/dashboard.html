@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load blog_extras %}
 
 {% block content %}
 
@@ -25,7 +26,7 @@
                 <h1>
 
                     Welcome back,
-                    {{ request.user.username }}
+                    {{ request.user|display_name }}
 
                 </h1>
 
@@ -48,6 +49,8 @@
             <!-- ================================= -->
             <!-- USER STATS -->
             <!-- ================================= -->
+
+            {% if not is_admin %}
 
             <a href="{% url 'liked_posts' %}" class="stat-card">
 
@@ -113,7 +116,9 @@
             <!-- AUTHOR STATS -->
             <!-- ================================= -->
 
-            {% if is_author or is_admin %}
+            {% endif %}
+
+            {% if is_author or is_admin and total_posts %}
 
             <a href="{% url 'my_posts' %}" class="stat-card">
 
@@ -535,20 +540,20 @@
 
                     data: categoryData,
 
-                    borderWidth: 2,
-
-                    borderRadius: 10,
-
+                    backgroundColor: ['#4f46e5', '#7c3aed', '#a855f7', '#06b6d4', '#f59e0b'],
+                    borderWidth: 0,
+                    borderRadius: 12,
+                    maxBarThickness: 56,
                 }]
-
             },
-
             options: {
-
                 responsive: true,
-
                 maintainAspectRatio: false,
-
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eef2f7' } },
+                    x: { grid: { display: false } },
+                },
             }
 
         });
@@ -727,13 +732,13 @@
 
     .stat-info h2 {
 
-        font-size: 52px;
+        font-size: clamp(30px, 3vw, 44px);
 
         color: #111827;
 
         line-height: 1;
 
-        word-break: break-word;
+        white-space: nowrap;
 
     }
 

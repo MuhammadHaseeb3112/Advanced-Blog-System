@@ -7,7 +7,10 @@ from django.shortcuts import render
 
 from django.core.cache import cache
 
-from blog.models import BlogPost
+from django.db.models import Count, Q
+
+from accounts.models import CustomUser
+from blog.models import BlogPost, Category, Comment
 
 
 def home(request):
@@ -20,7 +23,7 @@ def home(request):
     ).optimized(
     ).with_likes_count(
     ).with_comments_count(
-    )[:6]
+    ).order_by('-publish_at', '-created_at')[:8]
 
     # =====================================
     # TRENDING POSTS FROM REDIS
@@ -60,12 +63,19 @@ def home(request):
             'TRENDING POSTS CACHE HIT 🚀'
         )
 
+    published = BlogPost.objects.published()
     context = {
-
         'featured_posts': featured_posts,
-
         'trending_posts': trending_posts,
-
+        'stats': {
+            'posts': published.count(),
+            'authors': CustomUser.objects.filter(posts__in=published).distinct().count(),
+            'members': CustomUser.objects.count(),
+            'comments': Comment.objects.filter(post__in=published).count(),
+        },
+        'categories': Category.objects.annotate(
+            total=Count('posts', filter=Q(posts__in=published))
+        ).filter(total__gt=0).order_by('-total', 'name'),
     }
 
     return render(

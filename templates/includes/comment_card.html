@@ -1,3 +1,4 @@
+{% load blog_extras %}
 <div class="comment-box">
 
     <div class="comment-top">
@@ -6,7 +7,7 @@
 
             <div class="comment-avatar">
 
-                {{ comment.author.username|first|upper }}
+                {{ comment.author|display_name|first|upper }}
 
             </div>
 
@@ -14,7 +15,7 @@
 
                 <h4>
 
-                    {{ comment.author.username }}
+                    {{ comment.author|display_name }}
 
                 </h4>
 

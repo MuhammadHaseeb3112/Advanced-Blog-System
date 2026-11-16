@@ -77,6 +77,15 @@ class SeedDemoCommandTests(TestCase):
 
         call_command("seed_demo", verbosity=0)
         call_command("seed_demo", verbosity=0)
-        self.assertEqual(BlogPost.objects.published().count(), 9)
+        self.assertEqual(BlogPost.objects.published().count(), 12)
         self.assertEqual(BlogPost.objects.drafts().count(), 2)
         self.assertTrue(Comment.objects.exists())
+
+
+class LongTitleSlugTests(TestCase):
+    def test_long_titles_get_a_short_unique_slug(self):
+        title = "A very long title that is much longer than fifty characters in total"
+        first = make_post(title=title)
+        second = make_post(title=title)
+        self.assertLessEqual(len(first.slug), 50)
+        self.assertNotEqual(first.slug, second.slug)

@@ -48,9 +48,10 @@ def create_blog_slug(sender, instance, *args, **kwargs):
 
     if not instance.slug:
 
+        # SlugField holds 50 characters; leave room for a "-N" suffix.
         base_slug = slugify(
             instance.title
-        )
+        )[:44].rstrip('-') or 'post'
 
         unique_slug = base_slug
 

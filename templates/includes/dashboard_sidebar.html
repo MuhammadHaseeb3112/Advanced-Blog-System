@@ -440,10 +440,17 @@
     
             </a>
     
-            <a href="/admin/">    
-                🛠️ Admin Panel
-    
+            <a href="{% url 'manage_users' %}">
+
+                👥 Users
+
             </a>
+
+            {% if not demo_mode %}
+            <a href="/admin/">
+                🛠️ Admin Panel
+            </a>
+            {% endif %}
     
             {% endif %}
     

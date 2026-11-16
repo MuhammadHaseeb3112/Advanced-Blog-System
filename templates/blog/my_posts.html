@@ -80,7 +80,7 @@
 
                         <span class="post-date">
 
-                            {{ post.created_at|date:"M d, Y" }}
+                            {{ post.publish_at|default:post.created_at|date:"M d, Y" }}
 
                         </span>
 

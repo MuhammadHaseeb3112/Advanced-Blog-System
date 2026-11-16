@@ -8,7 +8,7 @@
 
 A multi-author blogging platform built with Django. Authors write, schedule and publish posts; readers like, bookmark and comment; and authors see likes and comments arrive in real time over WebSockets. Background work (emails, scheduled publishing, trending scores) runs in Celery, and everything is also available as a JWT-secured REST API with OpenAPI docs.
 
-**Live demo:** [mh-blog.duckdns.org](https://mh-blog.duckdns.org/accounts/login/). Sign in with one click as an **Author** or a **Reader**; the demo data resets every night.
+**Live demo:** [mh-blog.duckdns.org](https://mh-blog.duckdns.org/accounts/login/). Sign in with one click as an **Author**, a **Reader** or a read-only **Admin** (analytics dashboard, users and moderation pages); the demo data resets every night.
 
 ![Home page](docs/screenshots/home.jpg)
 
@@ -19,14 +19,15 @@ A multi-author blogging platform built with Django. Authors write, schedule and 
 - **Accounts.** Email sign-up with verification, login by email, password reset, Google and GitHub login (django-allauth), and three roles: admin, author and reader.
 - **REST API.** Django REST Framework with JWT (rotating refresh tokens, blacklisted on logout), filtering, search, pagination, throttling and Swagger/ReDoc docs.
 - **Privacy by default.** Drafts and scheduled posts are visible only to their author and to admins, on the website and in the API.
-- **Tested.** 74 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
+- **Analytics dashboard.** Admins see platform totals, a top-categories chart and trending posts, precomputed hourly by Celery and cached in Redis.
+- **Tested.** 81 tests cover models, views, the API, permissions, Celery tasks and WebSockets, and run on PostgreSQL in GitHub Actions on every push.
 
 ## Screenshots
 
 | Blog list | Post page |
 |---|---|
 | ![Blog list](docs/screenshots/blog-list.jpg) | ![Post page](docs/screenshots/post-detail.jpg) |
-| **Author dashboard** | **My posts** |
+| **Admin analytics dashboard** | **My posts** |
 | ![Dashboard](docs/screenshots/dashboard.jpg) | ![My posts](docs/screenshots/my-posts.jpg) |
 | **Live notifications** | **Write a post** |
 | ![Notifications](docs/screenshots/notifications.jpg) | ![Create post](docs/screenshots/create-post.jpg) |

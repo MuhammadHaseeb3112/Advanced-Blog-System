@@ -1,9 +1,9 @@
-"""Fill the database with demo authors, posts, comments and likes.
+"""Fill the database with demo users, posts, comments and likes.
 
     python manage.py seed_demo           # add demo data if it is missing
     python manage.py seed_demo --reset   # wipe demo data and create it again
 
-Cover images are drawn with Pillow, so no external files are needed.
+Cover illustrations are drawn with Pillow, so no external files are needed.
 """
 import random
 from datetime import timedelta
@@ -11,110 +11,152 @@ from io import BytesIO
 
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
-from django.db.models import F
 from django.utils import timezone
-from PIL import Image, ImageDraw
+from django.utils.text import slugify
+from PIL import Image, ImageDraw, ImageFilter
 
 from accounts.models import CustomUser
 from blog.models import BlogPost, Category, Comment, Tag
 
+from ._demo_content import COMMENTS, DRAFTS, PEOPLE, POSTS
+
 DEMO_DOMAIN = "demo.blog"
 PASSWORD = "DemoPass123!"
 
-AUTHORS = [
-    ("sara", "Sara Khan", "author", "Backend engineer writing about Django and APIs."),
-    ("bilal", "Bilal Ahmed", "author", "DevOps and cloud. Ships things on Fridays."),
-    ("ayesha", "Ayesha Malik", "author", "Frontend developer who likes clean UIs."),
-    ("reader", "Demo Reader", "user", "Reads everything, comments sometimes."),
-]
-
-PALETTES = [
-    ((37, 99, 235), (124, 58, 237)),
-    ((5, 150, 105), (14, 116, 144)),
-    ((234, 88, 12), (219, 39, 119)),
-    ((15, 23, 42), (51, 65, 85)),
-]
-
-POSTS = [
-    ("Backend", ["django", "performance"], "sara",
-     "Finding and Fixing N+1 Queries in Django",
-     "How select_related, prefetch_related and a query-count test keep list pages fast.",
-     "A list page that runs one query per row looks fine with ten rows and falls over with a thousand. "
-     "This post walks through spotting N+1 queries with the Django debug toolbar, fixing them with "
-     "select_related for foreign keys and prefetch_related for many-to-many fields, and locking the fix in "
-     "with assertNumQueries so it never comes back."),
-    ("Backend", ["django", "celery"], "sara",
-     "Background Jobs with Celery and Redis",
-     "Sending emails, publishing scheduled posts and building reports without blocking requests.",
-     "Anything slower than a few hundred milliseconds belongs outside the request. Celery workers pick up "
-     "jobs from Redis, retry failures with a back-off, and Celery Beat runs periodic tasks such as "
-     "publishing scheduled posts and clearing old notifications."),
-    ("Backend", ["django", "websockets"], "sara",
-     "Real-Time Notifications with Django Channels",
-     "Pushing likes and comments to the browser the moment they happen.",
-     "Django Channels adds WebSockets to Django. Each user joins a personal group, each post has its own "
-     "room, and views publish events to the channel layer so every open tab updates instantly."),
-    ("Backend", ["drf", "security"], "sara",
-     "JWT Authentication for a DRF API",
-     "Access and refresh tokens, rotation and blacklisting on logout.",
-     "Short-lived access tokens limit the damage of a leak, refresh tokens keep users signed in, and "
-     "blacklisting on logout makes sure an old refresh token cannot be reused."),
-    ("DevOps", ["docker", "deployment"], "bilal",
-     "Dockerizing a Django App with PostgreSQL and Redis",
-     "One docker compose up for the web app, workers, database and cache.",
-     "A compose file with separate services for Django, Celery worker, Celery Beat, PostgreSQL and Redis "
-     "gives every developer the same environment and makes production deploys boring."),
-    ("DevOps", ["ci-cd", "testing"], "bilal",
-     "CI with GitHub Actions: Tests on Every Push",
-     "Run migrations checks and the test suite against a real PostgreSQL service.",
-     "A workflow that spins up PostgreSQL as a service, installs dependencies with caching, checks for "
-     "missing migrations and runs the whole test suite takes a couple of minutes and catches most "
-     "regressions before they reach main."),
-    ("Frontend", ["ux", "css"], "ayesha",
-     "Designing a Readable Blog Layout",
-     "Line length, spacing and contrast choices that make long articles easier to read.",
-     "Keep lines between 60 and 80 characters, use generous line height, and give headings enough space. "
-     "Small choices like these matter more than any animation."),
-    ("Frontend", ["javascript", "ux"], "ayesha",
-     "Infinite Scroll Without a Framework",
-     "Loading the next page of posts with fetch and a few lines of JavaScript.",
-     "When the reader nears the bottom of the page, fetch the next page, parse the returned HTML and "
-     "append the new cards. No framework needed, and the server-rendered pages still work without JS."),
-    ("Career", ["career"], "bilal",
-     "What I Look for in a Junior Developer Portfolio",
-     "Live demos, tests and a clear README beat a long list of tutorials.",
-     "A project that is deployed, tested and documented tells a reviewer more than ten unfinished ones. "
-     "Show the live link, explain the trade-offs, and keep the README short."),
-]
-
-COMMENTS = [
-    "Really clear explanation, thanks!",
-    "This saved me a few hours today.",
-    "Would love a follow-up on testing this.",
-    "Great examples, bookmarked.",
-    "Exactly the problem I had last week.",
-]
+WIDTH, HEIGHT = 1200, 630
+PALETTES = {
+    "Backend": [((49, 46, 129), (124, 58, 237)), ((30, 64, 175), (79, 70, 229))],
+    "DevOps": [((6, 78, 59), (14, 116, 144)), ((15, 23, 42), (3, 105, 161))],
+    "Frontend": [((190, 24, 93), (234, 88, 12)), ((157, 23, 77), (124, 58, 237))],
+    "Data": [((12, 74, 110), (6, 182, 212)), ((30, 27, 75), (2, 132, 199))],
+    "Career": [((120, 53, 15), (217, 119, 6)), ((67, 56, 202), (219, 39, 119))],
+}
+WHITE = (255, 255, 255)
 
 
-def cover_image(title, palette):
-    width, height = 1200, 630
+def _background(palette, seed):
     start, end = palette
-    image = Image.new("RGB", (width, height), start)
-    draw = ImageDraw.Draw(image)
-    for x in range(width):
-        t = x / width
-        colour = tuple(int(start[i] + (end[i] - start[i]) * t) for i in range(3))
-        draw.line([(x, 0), (x, height)], fill=colour)
-    for i in range(6):
-        r = 120 + i * 70
-        draw.ellipse([width - r, -r // 2, width + r, r * 1.5], outline=(255, 255, 255, 40), width=2)
+    base = Image.new("RGB", (WIDTH, HEIGHT))
+    draw = ImageDraw.Draw(base)
+    for y in range(HEIGHT):
+        for x in range(0, WIDTH, 4):
+            t = (x / WIDTH) * 0.7 + (y / HEIGHT) * 0.3
+            colour = tuple(int(start[i] + (end[i] - start[i]) * t) for i in range(3))
+            draw.line([(x, y), (x + 3, y)], fill=colour)
+    glow = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    gdraw = ImageDraw.Draw(glow)
+    rnd = random.Random(seed)
+    for _ in range(4):
+        r = rnd.randint(120, 260)
+        cx, cy = rnd.randint(0, WIDTH), rnd.randint(0, HEIGHT)
+        gdraw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 255, 255, 38))
+    glow = glow.filter(ImageFilter.GaussianBlur(60))
+    base = Image.alpha_composite(base.convert("RGBA"), glow)
+    # subtle dot grid
+    dots = ImageDraw.Draw(base)
+    for x in range(40, WIDTH, 40):
+        for y in range(40, HEIGHT, 40):
+            dots.ellipse([x - 1, y - 1, x + 1, y + 1], fill=(255, 255, 255, 40))
+    return base
+
+
+def _panel(draw, box, radius=26):
+    x0, y0, x1, y1 = box
+    draw.rounded_rectangle([x0 + 10, y0 + 16, x1 + 10, y1 + 16], radius, fill=(0, 0, 0, 55))
+    draw.rounded_rectangle(box, radius, fill=(255, 255, 255, 235))
+
+
+def _code_window(draw, rnd):
+    box = (300, 120, 900, 520)
+    _panel(draw, box)
+    draw.rounded_rectangle([300, 120, 900, 175], 26, fill=(30, 27, 75, 255))
+    draw.rectangle([300, 150, 900, 175], fill=(30, 27, 75, 255))
+    for i, c in enumerate([(248, 113, 113), (251, 191, 36), (52, 211, 153)]):
+        draw.ellipse([326 + i * 26, 139, 342 + i * 26, 155], fill=c)
+    colours = [(99, 102, 241), (236, 72, 153), (16, 185, 129), (245, 158, 11), (148, 163, 184)]
+    y = 205
+    indent = 0
+    while y < 490:
+        indent = max(0, min(3, indent + rnd.choice([-1, 0, 0, 1])))
+        x = 340 + indent * 34
+        for _ in range(rnd.randint(1, 3)):
+            w = rnd.randint(40, 150)
+            if x + w > 860:
+                break
+            draw.rounded_rectangle([x, y, x + w, y + 14], 7, fill=colours[rnd.randrange(len(colours))] + (255,))
+            x += w + 14
+        y += 30
+
+
+def _servers(draw, rnd):
+    for i in range(3):
+        top = 150 + i * 120
+        _panel(draw, (330, top, 870, top + 95), 20)
+        for j in range(3):
+            draw.ellipse([360 + j * 28, top + 38, 376 + j * 28, top + 54],
+                         fill=[(52, 211, 153), (52, 211, 153), (251, 191, 36)][(i + j) % 3] + (255,))
+        for k in range(rnd.randint(4, 6)):
+            x = 480 + k * 62
+            draw.rounded_rectangle([x, top + 28, x + 48, top + 66], 8, fill=(14, 116, 144, 200))
+
+
+def _browser(draw, rnd):
+    _panel(draw, (260, 110, 940, 530))
+    draw.rounded_rectangle([290, 135, 910, 165], 15, fill=(226, 232, 240, 255))
+    draw.rounded_rectangle([290, 190, 910, 300], 16, fill=(236, 72, 153, 210))
+    draw.rounded_rectangle([320, 222, 620, 242], 10, fill=WHITE + (255,))
+    draw.rounded_rectangle([320, 256, 520, 270], 7, fill=(255, 255, 255, 180))
+    for i in range(3):
+        x = 290 + i * 212
+        draw.rounded_rectangle([x, 320, x + 196, 500], 16, fill=(241, 245, 249, 255))
+        draw.rounded_rectangle([x + 16, 336, x + 180, 410], 10, fill=(251, 146, 60, 200))
+        draw.rounded_rectangle([x + 16, 426, x + 160, 440], 7, fill=(100, 116, 139, 255))
+        draw.rounded_rectangle([x + 16, 452, x + 120, 464], 6, fill=(203, 213, 225, 255))
+
+
+def _chart(draw, rnd):
+    _panel(draw, (290, 120, 910, 520))
+    values = [rnd.randint(60, 260) for _ in range(8)]
+    for i, v in enumerate(values):
+        x = 340 + i * 68
+        draw.rounded_rectangle([x, 480 - v, x + 42, 480], 10, fill=(6, 182, 212, 220))
+    points = [(361 + i * 68, 470 - v - 30) for i, v in enumerate(values)]
+    draw.line(points, fill=(124, 58, 237, 255), width=6, joint="curve")
+    for x, y in points:
+        draw.ellipse([x - 8, y - 8, x + 8, y + 8], fill=(124, 58, 237, 255), outline=WHITE, width=3)
+
+
+def _profile(draw, rnd):
+    _panel(draw, (360, 110, 840, 530))
+    draw.ellipse([540, 150, 660, 270], fill=(217, 119, 6, 255))
+    draw.ellipse([575, 175, 625, 225], fill=WHITE + (255,))
+    draw.pieslice([555, 220, 645, 300], 180, 360, fill=WHITE + (255,))
+    draw.rounded_rectangle([470, 295, 730, 315], 10, fill=(30, 41, 59, 255))
+    draw.rounded_rectangle([510, 330, 690, 344], 7, fill=(148, 163, 184, 255))
+    for i, c in enumerate([(16, 185, 129), (99, 102, 241), (236, 72, 153)]):
+        y = 375 + i * 44
+        draw.ellipse([420, y, 444, y + 24], fill=c + (255,))
+        draw.rounded_rectangle([460, y + 5, 460 + rnd.randint(180, 300), y + 19], 7, fill=(203, 213, 225, 255))
+
+
+MOTIFS = {"Backend": _code_window, "DevOps": _servers, "Frontend": _browser,
+          "Data": _chart, "Career": _profile}
+
+
+def cover_image(title, category, index):
+    rnd = random.Random(title)
+    palettes = PALETTES.get(category, PALETTES["Backend"])
+    image = _background(palettes[index % len(palettes)], title)
+    layer = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    MOTIFS.get(category, _code_window)(ImageDraw.Draw(layer), rnd)
+    image = Image.alpha_composite(image, layer).convert("RGB")
     buffer = BytesIO()
-    image.save(buffer, format="JPEG", quality=85)
-    return ContentFile(buffer.getvalue(), name=f"{title[:40].lower().replace(' ', '-')}.jpg")
+    image.save(buffer, format="JPEG", quality=88)
+    return ContentFile(buffer.getvalue(), name=f"{slugify(title)[:50]}.jpg")
 
 
 class Command(BaseCommand):
-    help = "Create demo authors, posts, comments and likes."
+    help = "Create demo users, posts, comments and likes."
 
     def add_arguments(self, parser):
         parser.add_argument("--reset", action="store_true", help="Delete demo data first.")
@@ -127,9 +169,10 @@ class Command(BaseCommand):
             self.stdout.write("Demo data already present. Use --reset to recreate it.")
             return
 
-        random.seed(7)
+        rnd = random.Random(7)
+        now = timezone.now()
         users = {}
-        for username, full_name, role, bio in AUTHORS:
+        for username, full_name, role, bio in PEOPLE:
             first, last = full_name.split(" ", 1)
             user = CustomUser.objects.create_user(
                 username=username,
@@ -140,14 +183,16 @@ class Command(BaseCommand):
                 role=role,
                 bio=bio,
                 email_verified=True,
+                is_staff=role == "admin",
+                is_superuser=role == "admin",
             )
             users[username] = user
 
-        categories = {name: Category.objects.get_or_create(name=name)[0]
-                      for name in {p[0] for p in POSTS}}
-        now = timezone.now()
+        names = {p[0] for p in POSTS} | {d[0] for d in DRAFTS}
+        categories = {name: Category.objects.get_or_create(name=name)[0] for name in names}
+
         posts = []
-        for index, (category, tags, author, title, summary, body) in enumerate(POSTS):
+        for index, (category, tags, author, title, summary, body, days_ago) in enumerate(POSTS):
             post = BlogPost.objects.create(
                 title=title,
                 short_description=summary,
@@ -155,46 +200,57 @@ class Command(BaseCommand):
                 author=users[author],
                 category=categories[category],
                 status="published",
-                publish_at=now - timedelta(days=len(POSTS) - index),
-                views=random.randint(40, 600),
-                featured_image=cover_image(title, PALETTES[index % len(PALETTES)]),
+                publish_at=now - timedelta(days=days_ago, hours=rnd.randint(0, 10)),
+                views=rnd.randint(180, 1400) + days_ago * 25,
+                featured_image=cover_image(title, category, index),
             )
             post.tags.set([Tag.objects.get_or_create(name=t)[0] for t in tags])
             posts.append(post)
 
-        BlogPost.objects.create(
-            title="Draft: Caching Strategies with Redis",
-            short_description="Work in progress.",
-            content="Notes on per-view caching, low-level cache API and invalidation.",
-            author=users["sara"],
-            category=categories["Backend"],
-            status="draft",
-        )
-        BlogPost.objects.create(
-            title="Scheduled: Zero-Downtime Deploys",
-            short_description="Publishes automatically via Celery Beat.",
-            content="Health checks, rollbacks and running migrations safely.",
-            author=users["bilal"],
-            category=categories["DevOps"],
-            status="draft",
-            publish_at=now + timedelta(days=2),
-        )
+        for category, author, title, summary, body, publish_in in DRAFTS:
+            BlogPost.objects.create(
+                title=title,
+                short_description=summary,
+                content=body,
+                author=users[author],
+                category=categories[category],
+                status="draft",
+                publish_at=now + timedelta(days=publish_in) if publish_in else None,
+                featured_image=cover_image(title, category, 1),
+            )
 
-        everyone = list(users.values())
-        for post in posts:
+        everyone = [u for u in users.values() if u.username != "admin"]
+        comment_pool = COMMENTS[:]
+        rnd.shuffle(comment_pool)
+        for i, post in enumerate(posts):
             others = [u for u in everyone if u != post.author]
-            for user in random.sample(others, k=random.randint(1, len(others))):
+            for user in rnd.sample(others, k=rnd.randint(3, len(others))):
                 post.likes.add(user)
-            for user in random.sample(others, k=random.randint(0, 2)):
+            for user in rnd.sample(others, k=rnd.randint(1, 3)):
                 post.bookmarks.add(user)
-            for user in random.sample(others, k=random.randint(1, 2)):
-                Comment.objects.create(
-                    post=post, author=user, content=random.choice(COMMENTS),
-                    rating=random.randint(4, 5),
+            for j, user in enumerate(rnd.sample(others, k=rnd.randint(1, 3))):
+                comment = Comment.objects.create(
+                    post=post, author=user,
+                    content=comment_pool[(i * 3 + j) % len(comment_pool)],
+                    rating=rnd.choice([4, 5, 5]),
                 )
+                # spread comments over the days after publishing
+                published = post.publish_at or now
+                created = min(now, published + timedelta(hours=rnd.randint(2, 72)))
+                Comment.objects.filter(pk=comment.pk).update(created_at=created)
 
-        BlogPost.objects.filter(pk__in=[p.pk for p in posts[:3]]).update(views=F("views") + 500)
+        self._refresh_cached_stats()
         self.stdout.write(self.style.SUCCESS(
-            f"Created {len(users)} users and {len(posts) + 2} posts. "
+            f"Created {len(users)} users and {len(posts) + len(DRAFTS)} posts. "
             f"Log in with sara@{DEMO_DOMAIN} / {PASSWORD}"
         ))
+
+    def _refresh_cached_stats(self):
+        """Fill the trending and analytics caches so the demo never shows empty charts."""
+        from blog.tasks import calculate_dashboard_analytics, calculate_trending_posts
+
+        for task in (calculate_trending_posts, calculate_dashboard_analytics):
+            try:
+                task()
+            except Exception as exc:  # cache down: the hourly task will fill it later
+                self.stdout.write(f"Skipped {task.__name__}: {exc}")

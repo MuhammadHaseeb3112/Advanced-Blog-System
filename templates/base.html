@@ -1,4 +1,4 @@
-{% load static %}
+{% load static blog_extras %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -737,6 +737,7 @@
         }
     </style>
 
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 
 <body>
@@ -828,7 +829,7 @@
 
                     <div class="avatar">
 
-                        {{ request.user.username|first|upper }}
+                        {{ request.user|display_name|first|upper }}
 
                     </div>
 
@@ -836,21 +837,13 @@
 
                         <div class="username">
 
-                            {{ request.user.username }}
+                            {{ request.user|display_name }}
 
                         </div>
 
                         <small>
 
-                            {% if request.user.is_superuser %}
-
-                            Administrator
-
-                            {% else %}
-
-                            Member
-
-                            {% endif %}
+                            {% if request.user.role == 'admin' %}Administrator{% elif request.user.role == 'author' %}Author{% else %}Reader{% endif %}
 
                         </small>
 
@@ -931,10 +924,36 @@
     <!-- FOOTER -->
     <!-- ===================================== -->
 
-    <footer>
+    {% if messages %}
+    <div class="toast-stack">
+        {% for message in messages %}
+        <div class="toast {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-        Advanced Blog System © 2026
-
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand">AdvancedBlog</div>
+                <p>A multi-author blogging platform with live likes, comments and notifications, built with Django, Channels and Celery.</p>
+            </div>
+            <div>
+                <h4>Explore</h4>
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'blog_list' %}">All posts</a>
+                <a href="/api/docs/">REST API docs</a>
+            </div>
+            <div>
+                <h4>Project</h4>
+                <a href="https://github.com/MuhammadHaseeb3112/Advanced-Blog-System" target="_blank" rel="noopener">Source on GitHub</a>
+                <a href="https://muhammadhaseeb-portfolio-six.vercel.app/" target="_blank" rel="noopener">Built by Muhammad Haseeb</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>Advanced Blog System © 2026</span>
+            <span>Django · Channels · Celery · PostgreSQL · Redis</span>
+        </div>
     </footer>
 
    {% if blog %}
@@ -1181,6 +1200,7 @@
 
 {% endif %}
 
+<script src="{% static 'js/ui.js' %}" defer></script>
 </body>
 
 </html>

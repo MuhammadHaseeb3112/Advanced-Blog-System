@@ -51,13 +51,13 @@ def dashboard(request):
     # REDIS ANALYTICS CACHE
     # =====================================
 
-    analytics = cache.get(
-
-        'dashboard_analytics',
-
-        {}
-
-    )
+    analytics = cache.get('dashboard_analytics')
+    if analytics is None:
+        # Empty right after a deploy or cache flush: build it once now
+        # instead of showing empty charts until the hourly task runs.
+        from blog.tasks import calculate_dashboard_analytics
+        calculate_dashboard_analytics()
+        analytics = cache.get('dashboard_analytics') or {}
 
     # =====================================
     # USER POSTS    
